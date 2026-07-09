@@ -1,0 +1,17 @@
+{
+  "collection": "Sanders Albania — Residences",
+  "units": [
+    {
+      "slug": "seraphine",
+      "name": "Séraphine",
+      "development": "San Pietro Resort",
+      "location": "Gjiri i Lalzit, Albania",
+      "price": "€ 1,500,000",
+      "beds": 4, "baths": 4, "area": "232.6 m²",
+      "tag": "Private villa with pool",
+      "status": "available",
+      "thumb": "seraphine/thumb.jpg",
+      "href": "seraphine/"
+    }
+  ]
+}
