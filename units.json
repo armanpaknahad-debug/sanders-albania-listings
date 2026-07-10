@@ -218,6 +218,20 @@
       "status": "available",
       "thumb": "nerina/thumb.jpg",
       "href": "nerina/"
+    },
+    {
+      "slug": "ondine",
+      "name": "Ondine",
+      "development": "Turquoise Marina",
+      "location": "Kodra e Diellit, Albania",
+      "price": "€ 1,250,000",
+      "beds": 3,
+      "baths": 3,
+      "area": "261 m²",
+      "tag": "Private seafront villa",
+      "status": "available",
+      "thumb": "ondine/thumb.jpg",
+      "href": "ondine/"
     }
   ]
 }
