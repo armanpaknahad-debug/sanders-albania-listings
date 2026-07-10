@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Léonie — Floor plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1C3A2E; --green-soft:#2b5041;
+    --ivory:#F4F0E6; --ivory-2:#faf7ef;
+    --terra:#C0623C; --terra-soft:#d98b6a;
+    --gold:#C9A961;
+    --ink:#20302a;
+    --line:#1C3A2E;
+    --pad: clamp(20px, 5.2vw, 52px);
+    --sans:"DM Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --disp:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--ivory);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(28px,6vw,64px) var(--pad) clamp(40px,8vw,80px); }
+
+  /* header */
+  .eyebrow{ font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--terra); font-weight:600; margin:0 0 10px; }
+  h1{ font-family:var(--disp); font-style:italic; font-weight:600;
+    font-size:clamp(34px,7vw,54px); line-height:1; margin:0 0 6px; color:var(--green); }
+  .sub{ font-size:14px; color:#54615a; margin:0 0 clamp(22px,4vw,34px); max-width:52ch; }
+
+  /* level tabs */
+  .levels{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 clamp(18px,3vw,26px); }
+  .lvl{ appearance:none; border:1px solid rgba(28,58,46,.22); background:transparent;
+    color:var(--green); font-family:var(--sans); font-weight:500; font-size:13px;
+    letter-spacing:.02em; padding:9px 16px; border-radius:999px; cursor:pointer;
+    transition:.18s ease; }
+  .lvl:hover{ border-color:var(--green); }
+  .lvl[aria-selected="true"]{ background:var(--green); color:var(--ivory-2); border-color:var(--green); }
+
+  /* stage: plan + panel */
+  .stage{ display:grid; grid-template-columns:1fr 300px; gap:clamp(20px,3vw,36px); align-items:start; }
+  @media (max-width:760px){ .stage{ grid-template-columns:1fr; } }
+
+  .plan-card{ background:var(--ivory-2); border:1px solid rgba(28,58,46,.10);
+    border-radius:10px; padding:clamp(14px,3vw,26px); box-shadow:0 10px 34px rgba(28,58,46,.09); }
+  svg.plan{ display:block; width:100%; height:auto; touch-action:manipulation; }
+
+  .room{ fill:rgba(28,58,46,.045); stroke:var(--line); stroke-width:2.4;
+    stroke-linejoin:round; cursor:pointer; transition:fill .16s ease; }
+  .room:hover{ fill:rgba(192,98,60,.16); }
+  .room.sel{ fill:rgba(192,98,60,.24); stroke:var(--terra); stroke-width:3; }
+  .room.outdoor{ fill:rgba(201,169,97,.10); stroke-dasharray:7 6; stroke-width:2; }
+  .room.outdoor:hover{ fill:rgba(201,169,97,.22); }
+  .room.outdoor.sel{ fill:rgba(201,169,97,.30); stroke:var(--gold); stroke-dasharray:0; }
+
+  .rlabel{ font-family:var(--sans); font-size:12.5px; font-weight:500; fill:var(--green);
+    text-anchor:middle; pointer-events:none; letter-spacing:.01em; }
+  .rlabel.sm{ font-size:11px; }
+  .rarea{ font-family:var(--sans); font-size:11px; fill:#6b7a71; text-anchor:middle;
+    pointer-events:none; }
+
+  /* detail panel */
+  .panel{ position:sticky; top:20px; }
+  @media (max-width:760px){ .panel{ position:static; } }
+  .detail{ background:var(--green); color:var(--ivory-2); border-radius:10px;
+    padding:22px 22px 24px; min-height:150px; }
+  .detail .hint{ font-size:13.5px; color:rgba(244,240,230,.72); }
+  .detail .rname{ font-family:var(--disp); font-style:italic; font-weight:600;
+    font-size:29px; line-height:1.05; margin:2px 0 12px; }
+  .detail .big{ font-size:34px; font-weight:600; letter-spacing:-.01em; }
+  .detail .big small{ font-size:16px; font-weight:400; color:rgba(244,240,230,.7); margin-left:4px; }
+  .detail .note{ font-size:16px; color:rgba(244,240,230,.86); font-weight:400; }
+  .detail .cap{ font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--terra-soft); margin:14px 0 3px; }
+
+  .totals{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+  .totals .t{ background:var(--ivory-2); border-radius:8px; padding:12px 13px; }
+  .totals .t b{ display:block; font-family:var(--disp); font-style:italic; font-size:21px;
+    color:var(--green); font-weight:600; }
+  .totals .t span{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#6b7a71; }
+
+  .foot{ margin-top:clamp(22px,4vw,32px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
+  .brand{ font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--green);
+    font-weight:600; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow" id="dev">MANASTIRI BAY RESORT · ALBANIAN RIVIERA</p>
+  <h1 id="unit">Léonie</h1>
+  <p class="sub" id="tagline">Tap any room to see its size. Every space is drawn to scale from the registered plan.</p>
+
+  <div class="levels" id="levels" role="tablist" aria-label="Floor levels"></div>
+
+  <div class="stage">
+    <div class="plan-card">
+      <svg class="plan" id="svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div class="panel">
+      <div class="detail" id="detail" aria-live="polite">
+        <div class="hint">Tap a room on the plan to reveal its dimensions.</div>
+      </div>
+      <div class="totals" id="totals"></div>
+    </div>
+  </div>
+
+  <p class="foot" id="foot">Areas approximate, taken from the registered plan. Furniture indicative.</p>
+  <p class="brand">Sanders&nbsp;·&nbsp;London — Tirana</p>
+</div>
+
+<script>
+/* ============================================================================
+   PER-UNIT DATA  —  build_plan.py replaces this whole block from rooms.json.
+   Coordinates are plain SVG points in each level's own viewBox. Redraw the
+   real plan geometry per unit; areas are the registered m² for each room.
+   Sample data below is a PATTERN DEMO so the interaction can be approved.
+   ========================================================================== */
+const UNIT = {
+  "name": "Léonie",
+  "development": "MANASTIRI BAY RESORT · ALBANIAN RIVIERA",
+  "tagline": "Tap any room to see its size. Areas are scaled from the plan and reconciled to the certified schedule.",
+  "totals": [
+    {
+      "label": "Internal",
+      "value": "54.68 m²"
+    },
+    {
+      "label": "Loggia",
+      "value": "16.48 m²"
+    },
+    {
+      "label": "Common",
+      "value": "9.72 m²"
+    },
+    {
+      "label": "Floor",
+      "value": "First"
+    }
+  ],
+  "levels": [
+    {
+      "name": "First · Manastiri Bay Resort",
+      "viewbox": "0 0 760 740",
+      "rooms": [
+        {
+          "name": "Living & Kitchen",
+          "area": "31.55 m²",
+          "points": "120,60 420,60 420,430 120,430"
+        },
+        {
+          "name": "Bedroom",
+          "area": "13.78 m²",
+          "points": "420,60 640,60 640,280 420,280"
+        },
+        {
+          "name": "Hall",
+          "area": "4.7 m²",
+          "points": "420,280 530,280 530,430 420,430"
+        },
+        {
+          "name": "Bathroom",
+          "area": "4.65 m²",
+          "points": "530,280 640,280 640,430 530,430"
+        },
+        {
+          "name": "Loggia",
+          "area": "16.48 m²",
+          "points": "120,430 420,430 420,470 120,470",
+          "outdoor": true
+        }
+      ]
+    }
+  ]
+};
+/* ==========================  ENGINE (do not edit per unit)  ================= */
+const SVGNS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("svg");
+const detail=document.getElementById("detail");
+const levelsBar=document.getElementById("levels");
+let curLevel=0, selEl=null;
+
+function centroid(pts){
+  const p=pts.trim().split(/\s+/).map(s=>s.split(",").map(Number));
+  const n=p.length; let x=0,y=0; p.forEach(([a,b])=>{x+=a;y+=b;}); return [x/n,y/n];
+}
+function showDetail(room){
+  if(!room){ detail.innerHTML='<div class="hint">Tap a room on the plan to reveal its dimensions.</div>'; return; }
+  var isArea = /m\u00b2/.test(room.area);
+  var body = isArea
+    ? '<div class="big">'+room.area.replace(/\s*m\u00b2/,'<small>&nbsp;m\u00b2</small>')+'</div>'
+    : '<div class="note">'+room.area+'</div>';
+  detail.innerHTML =
+    '<div class="cap">'+(room.outdoor?"Outdoor space":"Room")+'</div>'+
+    '<div class="rname">'+room.name+'</div>'+ body;
+}
+function renderLevel(i){
+  curLevel=i; selEl=null; showDetail(null);
+  const lvl=UNIT.levels[i];
+  svg.setAttribute("viewBox", lvl.viewbox);
+  svg.innerHTML="";
+  lvl.rooms.forEach(room=>{
+    const poly=document.createElementNS(SVGNS,"polygon");
+    poly.setAttribute("points", room.points);
+    poly.setAttribute("class","room"+(room.outdoor?" outdoor":""));
+    poly.setAttribute("tabindex","0");
+    poly.setAttribute("role","button");
+    poly.setAttribute("aria-label", room.name+", "+room.area);
+    const pick=()=>{
+      if(selEl) selEl.classList.remove("sel");
+      poly.classList.add("sel"); selEl=poly; showDetail(room);
+    };
+    poly.addEventListener("click", pick);
+    poly.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); }});
+    svg.appendChild(poly);
+    const [cx,cy]=centroid(room.points);
+    const t=document.createElementNS(SVGNS,"text");
+    t.setAttribute("x",cx); t.setAttribute("y",cy);
+    t.setAttribute("class","rlabel"+(room.name.length>12?" sm":""));
+    t.textContent=room.name;
+    svg.appendChild(t);
+  });
+  Array.from(levelsBar.children).forEach((b,bi)=>b.setAttribute("aria-selected", bi===i?"true":"false"));
+  try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){}
+}
+function boot(){
+  document.getElementById("unit").textContent=UNIT.name;
+  document.getElementById("dev").textContent=UNIT.development;
+  if(UNIT.tagline) document.getElementById("tagline").textContent=UNIT.tagline;
+  document.title=UNIT.name+" — Floor plan";
+  // totals
+  const tw=document.getElementById("totals");
+  tw.innerHTML=(UNIT.totals||[]).map(t=>'<div class="t"><b>'+t.value+'</b><span>'+t.label+'</span></div>').join("");
+  // level tabs
+  levelsBar.innerHTML="";
+  UNIT.levels.forEach((lvl,i)=>{
+    const b=document.createElement("button");
+    b.className="lvl"; b.textContent=lvl.name; b.setAttribute("role","tab");
+    b.addEventListener("click",()=>renderLevel(i));
+    levelsBar.appendChild(b);
+  });
+  if(UNIT.levels.length<=1) levelsBar.style.display="none";
+  renderLevel(0);
+}
+// height sync when embedded in a listing (kills dead space, no clipping on mobile)
+function postH(){ try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){} }
+window.addEventListener("load", ()=>{ postH(); setTimeout(postH,300); });
+window.addEventListener("resize", postH);
+boot();
+</script>
+</body>
+</html>
