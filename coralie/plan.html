@@ -25,7 +25,7 @@
     font-family:var(--sans); color:var(--ink); background:var(--ivory);
     -webkit-font-smoothing:antialiased; line-height:1.5;
   }
-  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(28px,6vw,64px) var(--pad) clamp(40px,8vw,80px); }
+  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,34px) var(--pad) clamp(14px,2.5vw,22px); }
 
   /* header */
   .eyebrow{ font-size:11px; letter-spacing:.32em; text-transform:uppercase;
@@ -85,9 +85,9 @@
     color:var(--green); font-weight:600; }
   .totals .t span{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#6b7a71; }
 
-  .foot{ margin-top:clamp(22px,4vw,32px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
+  .foot{ margin-top:clamp(14px,2.5vw,20px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
   .brand{ font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--green);
-    font-weight:600; margin-top:6px; }
+    font-weight:600; margin-top:5px; }
 </style>
 </head>
 <body>
@@ -124,7 +124,7 @@
 const UNIT = {
   "name": "Coralie",
   "development": "MANASTIRI BAY RESORT · ALBANIAN RIVIERA",
-  "tagline": "Tap any room to see its size. Areas are scaled from the plan and reconciled to the certified schedule.",
+  "tagline": "Tap any room to see its size. Areas reconciled to the certified schedule.",
   "totals": [
     {
       "label": "Internal",
@@ -146,38 +146,38 @@ const UNIT = {
   "levels": [
     {
       "name": "Ground · Manastiri Bay Resort",
-      "viewbox": "0 0 760 740",
+      "viewbox": "0 0 690 620",
       "rooms": [
         {
           "name": "Living & Kitchen",
           "area": "31.76 m²",
-          "points": "120,60 420,60 420,430 120,430"
+          "points": "30,30 340,30 340,470 30,470"
         },
         {
           "name": "Bedroom",
           "area": "13.87 m²",
-          "points": "420,60 640,60 640,280 420,280"
+          "points": "355,30 645,30 645,300 355,300"
         },
         {
           "name": "Hall",
           "area": "4.73 m²",
-          "points": "420,280 530,280 530,430 420,430"
+          "points": "355,300 500,300 500,470 355,470"
         },
         {
           "name": "Bathroom",
           "area": "4.69 m²",
-          "points": "530,280 640,280 640,430 530,430"
+          "points": "515,300 645,300 645,470 515,470"
         },
         {
           "name": "Loggia",
           "area": "9.06 m²",
-          "points": "120,430 420,430 420,470 120,470",
+          "points": "30,482 645,482 645,520 30,520",
           "outdoor": true
         },
         {
           "name": "Private terrace",
           "area": "33.36 m²",
-          "points": "120,480 700,480 700,720 120,720",
+          "points": "30,532 645,532 645,577 30,577",
           "outdoor": true
         }
       ]
