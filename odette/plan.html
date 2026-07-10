@@ -306,7 +306,7 @@ function renderLevel(i){
     svg.appendChild(t);
   });
   Array.from(levelsBar.children).forEach((b,bi)=>b.setAttribute("aria-selected", bi===i?"true":"false"));
-  try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){}
+  try{ parent.postMessage({sandersPlanHeight: (function(){var w=document.querySelector('.wrap');return w?Math.ceil(w.getBoundingClientRect().height):document.body.scrollHeight;})()}, "*"); }catch(e){}
 }
 function boot(){
   document.getElementById("unit").textContent=UNIT.name;
@@ -328,9 +328,9 @@ function boot(){
   renderLevel(0);
 }
 // height sync when embedded in a listing (kills dead space, no clipping on mobile)
-function postH(){ try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){} }
+function postH(){ try{ parent.postMessage({sandersPlanHeight: (function(){var w=document.querySelector('.wrap');return w?Math.ceil(w.getBoundingClientRect().height):document.body.scrollHeight;})()}, "*"); }catch(e){} }
 window.addEventListener("load", ()=>{ postH(); setTimeout(postH,300); });
-window.addEventListener("resize", postH);
+window.addEventListener("resize", postH); try{ new ResizeObserver(function(){postH();}).observe(document.body); }catch(e){}
 boot();
 </script>
 </body>
