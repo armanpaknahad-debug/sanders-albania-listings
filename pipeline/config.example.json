@@ -1,0 +1,21 @@
+{
+  "name": "Ondine",
+  "slug": "ondine",
+  "development": "Turquoise Marina",
+  "dev_eyebrow": "Kodra e Diellit · Lalzit Bay",
+  "dev_strap": "Seafront canal villas on the Adriatic coast",
+  "location": "Kodra e Diellit, Albania",
+  "price": "€ 1,250,000",
+  "tag": "seafront villa",
+  "beds": 3,
+  "area": "261 m²",
+  "eyebrow": "Albania · Lalzit Bay",
+  "sub": "One-line hero subtitle.",
+  "description": "Full paragraph for the residence section.",
+  "spec": [["Internal","261 m²"],["Lower level","130.71 m²"],["Veranda","120 m²"],["Plot","678.02 m²"],["Bedrooms","3"]],
+  "highlights": ["Private canal frontage","Three living levels + basement","Wraparound terraces & garden","Standalone seafront villa"],
+  "location_h2": "On the water at Turquoise Marina",
+  "location_body": "Location paragraph.",
+  "hero": "assets/hero.jpg",
+  "gallery": [["assets/g1.jpg","The residence"],["assets/g2.jpg","Artist's impression"]]
+}
