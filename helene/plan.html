@@ -25,7 +25,7 @@
     font-family:var(--sans); color:var(--ink); background:var(--ivory);
     -webkit-font-smoothing:antialiased; line-height:1.5;
   }
-  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(28px,6vw,64px) var(--pad) clamp(40px,8vw,80px); }
+  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,34px) var(--pad) clamp(14px,2.5vw,22px); }
 
   /* header */
   .eyebrow{ font-size:11px; letter-spacing:.32em; text-transform:uppercase;
@@ -85,9 +85,9 @@
     color:var(--green); font-weight:600; }
   .totals .t span{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#6b7a71; }
 
-  .foot{ margin-top:clamp(22px,4vw,32px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
+  .foot{ margin-top:clamp(14px,2.5vw,20px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
   .brand{ font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--green);
-    font-weight:600; margin-top:6px; }
+    font-weight:600; margin-top:5px; }
 </style>
 </head>
 <body>
@@ -124,7 +124,7 @@
 const UNIT = {
   "name": "Hélène",
   "development": "GREEN COAST RESORT · PALASË",
-  "tagline": "Tap any room to see its size. Areas are scaled from the plan and reconciled to the certified schedule.",
+  "tagline": "Tap any room to see its size. Room shapes traced from the plan; areas reconciled to the certified schedule.",
   "totals": [
     {
       "label": "Internal",
@@ -146,38 +146,49 @@ const UNIT = {
   "levels": [
     {
       "name": "First Floor · Green Coast Resort",
-      "viewbox": "0 0 760 780",
+      "viewbox": "0 0 690 1010",
       "rooms": [
         {
-          "name": "Living & Kitchen",
-          "area": "45.25 m²",
-          "points": "120,60 420,60 420,430 120,430"
+          "name": "Kitchen & Dining",
+          "area": "9.41 m²",
+          "points": "30,30 340,30 340,240 30,240"
         },
         {
-          "name": "Bedroom",
-          "area": "19.76 m²",
-          "points": "420,60 640,60 640,280 420,280"
+          "name": "Living Room",
+          "area": "26.66 m²",
+          "points": "30,240 340,240 340,880 30,880"
         },
         {
           "name": "Hall",
-          "area": "6.74 m²",
-          "points": "420,280 530,280 530,430 420,430"
+          "area": "6.27 m²",
+          "points": "355,30 515,30 515,200 355,200"
         },
         {
           "name": "Bathroom",
-          "area": "6.67 m²",
-          "points": "530,280 640,280 640,430 530,430"
+          "area": "7.06 m²",
+          "points": "515,30 645,30 645,200 515,200"
+        },
+        {
+          "name": "Wardrobe",
+          "area": "4.71 m²",
+          "points": "355,200 515,200 515,360 355,360"
+        },
+        {
+          "name": "Bedroom",
+          "area": "24.31 m²",
+          "points": "355,360 645,360 645,880 355,880",
+          "_last": true
         },
         {
           "name": "Loggia",
           "area": "17.78 m²",
-          "points": "120,430 420,430 420,470 120,470",
+          "points": "30,892 645,892 645,930 30,930",
           "outdoor": true
         },
         {
           "name": "Veranda",
           "area": "54.52 m²",
-          "points": "120,480 700,480 700,760 120,760",
+          "points": "30,942 645,942 645,987 30,987",
           "outdoor": true
         }
       ]
