@@ -25,7 +25,7 @@
     font-family:var(--sans); color:var(--ink); background:var(--ivory);
     -webkit-font-smoothing:antialiased; line-height:1.5;
   }
-  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(28px,6vw,64px) var(--pad) clamp(40px,8vw,80px); }
+  .wrap{ max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,34px) var(--pad) clamp(14px,2.5vw,22px); }
 
   /* header */
   .eyebrow{ font-size:11px; letter-spacing:.32em; text-transform:uppercase;
@@ -85,9 +85,9 @@
     color:var(--green); font-weight:600; }
   .totals .t span{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#6b7a71; }
 
-  .foot{ margin-top:clamp(22px,4vw,32px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
+  .foot{ margin-top:clamp(14px,2.5vw,20px); font-size:11px; color:#8a948d; letter-spacing:.02em; }
   .brand{ font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:var(--green);
-    font-weight:600; margin-top:6px; }
+    font-weight:600; margin-top:5px; }
 </style>
 </head>
 <body>
@@ -124,7 +124,7 @@
 const UNIT = {
   "name": "Vivienne",
   "development": "MANASTIRI BAY RESORT · ALBANIAN RIVIERA",
-  "tagline": "Tap any room to see its size. Areas are scaled from the plan and reconciled to the certified schedule.",
+  "tagline": "Tap any room to see its size. Areas reconciled to the certified schedule.",
   "totals": [
     {
       "label": "Internal",
@@ -146,37 +146,37 @@ const UNIT = {
   "levels": [
     {
       "name": "Third · Manastiri Bay Resort",
-      "viewbox": "0 0 780 560",
+      "viewbox": "0 0 690 610",
       "rooms": [
         {
           "name": "Living & Kitchen",
           "area": "37.36 m²",
-          "points": "110,60 430,60 430,440 110,440"
+          "points": "30,30 340,30 340,520 30,520"
         },
         {
           "name": "Bedroom 1",
           "area": "19.57 m²",
-          "points": "430,60 660,60 660,240 430,240"
+          "points": "355,30 645,30 645,270 355,270"
         },
         {
           "name": "Bedroom 2",
           "area": "16.01 m²",
-          "points": "430,240 660,240 660,380 430,380"
+          "points": "355,285 645,285 645,470 355,470"
         },
         {
           "name": "Bathroom",
           "area": "7.11 m²",
-          "points": "430,380 545,380 545,440 430,440"
+          "points": "355,485 500,485 500,520 355,520"
         },
         {
           "name": "Hall",
           "area": "8.9 m²",
-          "points": "545,380 660,380 660,440 545,440"
+          "points": "515,485 645,485 645,520 515,520"
         },
         {
           "name": "Balcony",
           "area": "6.25 m²",
-          "points": "110,440 430,440 430,485 110,485",
+          "points": "30,532 645,532 645,570 30,570",
           "outdoor": true
         }
       ]
