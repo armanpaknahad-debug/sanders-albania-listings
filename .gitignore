@@ -8,3 +8,12 @@ desktop.ini
 # This repo is PUBLIC and serves listings.sandersalbania.com — inbound developer
 # files (agreements, economic offers, unpriced brochures) must never be pushed to it.
 Manisteri new batch/
+
+# Brochure source PDFs (multi-MB marketing source, not web assets). Kept locally
+# in the unit/g8 folders but never committed to the public site repo.
+*_Sanders.pdf
+**/*_Sanders.pdf
+
+# Source spreadsheets (unit registers etc.) — working docs, not web assets.
+*.xlsx
+**/*.xlsx
