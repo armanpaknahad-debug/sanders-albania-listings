@@ -183,11 +183,11 @@ function centroid(pts){
   const n=p.length; let x=0,y=0; p.forEach(([a,b])=>{x+=a;y+=b;}); return [x/n,y/n];
 }
 function showDetail(room){
-  if(!room){ detail.innerHTML='<div class="hint">Tap a room on the plan to reveal its dimensions.</div>'; return; }
-  var isArea = /m\u00b2/.test(room.area);
-  var body = isArea
-    ? '<div class="big">'+room.area.replace(/\s*m\u00b2/,'<small>&nbsp;m\u00b2</small>')+'</div>'
-    : '<div class="note">'+room.area+'</div>';
+  if(!room){ detail.innerHTML='<div class="hint">Tap a room on the plan to see its name and size.</div>'; return; }
+  var area = room.area || "";
+  var body = /m\u00b2/.test(area)
+    ? '<div class="big">'+area.replace(/\s*m\u00b2/,'<small>&nbsp;m\u00b2</small>')+'</div>'
+    : (area ? '<div class="note">'+area+'</div>' : '');
   detail.innerHTML =
     '<div class="cap">'+(room.outdoor?"Outdoor space":"Room")+'</div>'+
     '<div class="rname">'+room.name+'</div>'+ body;
@@ -198,7 +198,7 @@ function makeHot(room, cls){
   poly.setAttribute("class", cls+(room.outdoor?" outdoor":""));
   poly.setAttribute("tabindex","0");
   poly.setAttribute("role","button");
-  poly.setAttribute("aria-label", room.name+", "+room.area);
+  poly.setAttribute("aria-label", room.area ? room.name+", "+room.area : room.name);
   const pick=()=>{ if(selEl) selEl.classList.remove("sel"); poly.classList.add("sel"); selEl=poly; showDetail(room); };
   poly.addEventListener("click", pick);
   poly.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); }});

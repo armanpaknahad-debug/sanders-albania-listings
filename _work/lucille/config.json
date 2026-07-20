@@ -1,0 +1,66 @@
+{
+  "name": "Lucille",
+  "slug": "lucille",
+  "development": "Green Coast Resort",
+  "dev_eyebrow": "PALASË · ALBANIAN RIVIERA",
+  "dev_strap": "Terraced hillside residences above the Ionian",
+  "location": "Palasë, Himarë — Albanian Riviera",
+  "price": "On application",
+  "tag": "Top-floor two-bedroom terrace residence",
+  "beds": 2,
+  "area": "150.49 m²",
+  "card_meta": "2 Bed · 150.49 m²",
+  "eyebrow": "Green Coast · Albanian Riviera",
+  "sub": "The crown of the collection — a top-floor two-bedroom residence with a private terrace above the rooftops.",
+  "description": "The crown of the collection — a top-floor two-bedroom residence of over 150 square metres gross with a private terrace of almost 35 square metres above the rooftops of Green Coast, Palasë. The terrace holds the long view over the resort towards the Ionian — made for evenings outdoors.",
+  "spec": [
+    [
+      "Net floor area",
+      "109.51 m²"
+    ],
+    [
+      "Accessory area",
+      "40.98 m²"
+    ],
+    [
+      "Gross floor area",
+      "150.49 m²"
+    ],
+    [
+      "Private terrace",
+      "34.84 m²"
+    ],
+    [
+      "Floor",
+      "Third"
+    ]
+  ],
+  "highlights": [
+    "The largest residence in the collection",
+    "Private terrace · 34.84 m²",
+    "Top floor, long views to the Ionian",
+    "Two bedrooms, two bathrooms"
+  ],
+  "location_h2": "Green Coast, Palasë — the Albanian Riviera",
+  "location_body": "Green Coast sits on the Palasë stretch of the Albanian Riviera, where the Ceraunian hillside drops to the Ionian. The resort is built as a stone village — plazas, promenades and pools threaded between terraced buildings — with a Blue Flag beach below and Himarë along the coast. It is Albania's most established seaside address, and the residences sit inside it rather than alongside it.",
+  "site": "https://listings.sandersalbania.com",
+  "hero": "assets/hero.jpg",
+  "gallery": [
+    [
+      "assets/g1.jpg",
+      "The Riviera coast · Palasë"
+    ],
+    [
+      "assets/g2.jpg",
+      "The Riviera coast · Palasë"
+    ],
+    [
+      "assets/g3.jpg",
+      "The Riviera coast · Palasë"
+    ],
+    [
+      "assets/g4.jpg",
+      "Green Coast · Artist's impression"
+    ]
+  ]
+}

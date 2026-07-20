@@ -41,8 +41,10 @@ def main():
     for lvl in data["levels"]:
         assert lvl.get("viewbox") and lvl.get("rooms"), "each level needs viewbox + rooms"
         for r in lvl["rooms"]:
-            assert r.get("name") and r.get("area") and r.get("points"), \
-                f"room missing name/area/points: {r}"
+            # area is optional: interior rooms show name only (no fabricated area);
+            # outdoor spaces carry the certified m² from the spec table.
+            assert r.get("name") and r.get("points"), \
+                f"room missing name/points: {r}"
 
     tpl = TEMPLATE.read_text(encoding="utf-8")
 
