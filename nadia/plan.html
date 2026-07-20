@@ -38,7 +38,7 @@
   .levels{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 clamp(18px,3vw,26px); }
   .lvl{ appearance:none; border:1px solid rgba(28,58,46,.22); background:transparent;
     color:var(--green); font-family:var(--sans); font-weight:500; font-size:13px;
-    letter-spacing:.02em; padding:9px 16px; border-radius:999px; cursor:pointer;
+    letter-spacing:.02em; padding:9px 18px; min-height:44px; border-radius:999px; cursor:pointer;
     transition:.18s ease; }
   .lvl:hover{ border-color:var(--green); }
   .lvl[aria-selected="true"]{ background:var(--green); color:var(--ivory-2); border-color:var(--green); }
@@ -260,11 +260,28 @@ function boot(){
   if(UNIT.levels.length<=1) levelsBar.style.display="none";
   renderLevel(0);
 }
-// height sync when embedded in a listing (kills dead space, no clipping on mobile)
-function postH(){ try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){} }
-window.addEventListener("load", ()=>{ postH(); setTimeout(postH,300); });
+// Height sync when embedded in a listing. The parent sizes the iframe from this
+// number alone, so it must be re-sent whenever the content box can change:
+// image decode, font swap, level switch, orientation change.
+function measure(){
+  var b=document.body, d=document.documentElement;
+  return Math.ceil(Math.max(b.scrollHeight, d.scrollHeight, b.offsetHeight, d.offsetHeight));
+}
+var lastH=0;
+function postH(){
+  try{
+    var h=measure();
+    if(h && h!==lastH){ lastH=h; parent.postMessage({sandersPlanHeight: h}, "*"); }
+  }catch(e){}
+}
+window.addEventListener("load", ()=>{ postH(); setTimeout(postH,120); setTimeout(postH,400); });
 window.addEventListener("resize", postH);
+window.addEventListener("orientationchange", ()=>setTimeout(postH,150));
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(postH);
+// catches anything the explicit hooks miss (image decode, late reflow)
+if(window.ResizeObserver) new ResizeObserver(postH).observe(document.body);
 boot();
+postH();
 </script>
 </body>
 </html>

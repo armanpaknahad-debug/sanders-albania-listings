@@ -17,7 +17,10 @@ from pathlib import Path
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
-LOGO = HERE / "lib" / "logo.png"
+# The mark ships in two tones. The rule, applied everywhere: the white mark only
+# ever sits on the forest-green bands; the dark mark on ivory/light backgrounds.
+LOGO = HERE / "lib" / "logo.png"           # white — for dark green backgrounds
+LOGO_DARK = HERE / "lib" / "logo-dark.png"  # #1C3A2E — for ivory/light backgrounds
 
 def datauri(path, w, q=82):
     im = Image.open(path).convert("RGB")
@@ -26,8 +29,12 @@ def datauri(path, w, q=82):
     b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
-def logo_uri():
-    return "data:image/png;base64," + base64.b64encode(LOGO.read_bytes()).decode()
+def logo_uri(dark=False):
+    """The real Sanders mark. dark=True returns the #1C3A2E variant for light bands."""
+    src = LOGO_DARK if dark else LOGO
+    if dark and not src.exists():
+        raise SystemExit(f"missing {src} — generate it from logo.png before building")
+    return "data:image/png;base64," + base64.b64encode(src.read_bytes()).decode()
 
 def esc(s): return (s or "").replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
@@ -37,7 +44,8 @@ def build(cfg, base):
     gal  = [(datauri(base/g[0], 1200), g[1]) for g in cfg.get("gallery", [])]
     spec = cfg.get("spec", [])
     hl   = cfg.get("highlights", [])
-    LG   = logo_uri()
+    LG_DARK = logo_uri(dark=True)   # nav sits on ivory
+    LG      = logo_uri()            # footer sits on forest green
 
     spec_html = "".join(
         f'<div><div class="n">{esc(str(v))}</div><div class="k">{esc(k)}</div></div>'
@@ -82,16 +90,16 @@ img{{display:block;max-width:100%}}
 .eyebrow{{font-size:11px;letter-spacing:.30em;text-transform:uppercase;color:var(--terra);font-weight:600;margin:0 0 14px}}
 h2{{font-family:var(--disp);font-style:italic;font-weight:600;font-size:clamp(28px,6vw,44px);line-height:1.04;margin:0 0 18px;color:var(--green)}}
 .lead{{font-size:clamp(15px,4vw,16px);color:#4c5a52;max-width:62ch;line-height:1.6}}
-nav{{position:sticky;top:0;z-index:20;background:rgba(244,240,230,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(28,58,46,.12)}}
-.navin{{max-width:1160px;margin:0 auto;padding:12px clamp(22px,6vw,56px);display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}}
+nav{{position:sticky;top:0;z-index:20;background:rgba(244,240,230,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(28,58,46,.12);padding-top:env(safe-area-inset-top)}}
+.navin{{max-width:1160px;margin:0 auto;padding:12px clamp(22px,6vw,56px);padding-left:max(clamp(22px,6vw,56px),env(safe-area-inset-left));padding-right:max(clamp(22px,6vw,56px),env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}}
 .brand{{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.26em;font-size:13px;color:var(--green)}}
 .brand img{{width:22px;height:auto}}
 .navmid{{font-size:11px;letter-spacing:.20em;color:#6b7a71;text-transform:uppercase;display:none}}
 @media(min-width:900px){{.navmid{{display:block}}}}
-.btn{{display:inline-block;font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:11px 20px;border-radius:2px;text-decoration:none;transition:.18s}}
+.btn{{display:inline-flex;align-items:center;justify-content:center;min-height:44px;font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:12px 22px;border-radius:2px;text-decoration:none;transition:.18s}}
 .btn-out{{background:transparent;color:var(--green);border:1px solid rgba(28,58,46,.4)}}.btn-out:hover{{border-color:var(--green)}}
 .btn-terra{{background:var(--terra);color:#fff;border:1px solid var(--terra)}}.btn-terra:hover{{background:#a8512f}}
-.hero{{position:relative;min-height:82vh;display:flex;align-items:flex-end;color:var(--ivory2);background:#0d1a14 center/cover no-repeat}}
+.hero{{position:relative;min-height:82vh;min-height:82dvh;display:flex;align-items:flex-end;color:var(--ivory2);background:#0d1a14 center/cover no-repeat}}
 .hero::after{{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,26,20,.12) 0%,rgba(13,26,20,.18) 45%,rgba(28,58,46,.93) 100%)}}
 .hero .wrap{{position:relative;z-index:2;padding-top:clamp(96px,20vw,120px);padding-bottom:clamp(40px,8vw,54px);width:100%}}
 .hero .eyebrow{{color:var(--terra)}}
@@ -107,7 +115,7 @@ nav{{position:sticky;top:0;z-index:20;background:rgba(244,240,230,.92);backdrop-
 .specgrid .k{{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,240,230,.62);margin-top:6px}}
 section{{padding:clamp(46px,9vw,84px) 0}}
 .plancard{{margin-top:30px;background:var(--ivory2);border:1px solid rgba(28,58,46,.1);border-radius:10px;box-shadow:0 12px 38px rgba(28,58,46,.09);overflow:hidden}}
-.plancard iframe{{width:100%;border:0;display:block;min-height:340px}}
+.plancard iframe{{width:100%;border:0;display:block;height:auto;min-height:0}}
 .gal{{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px}}
 @media(max-width:680px){{.gal{{grid-template-columns:1fr}}}}
 .gal figure{{margin:0;position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10}}
@@ -126,13 +134,14 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 .disc{{margin-top:30px;padding-top:18px;border-top:1px solid rgba(244,240,230,.14);font-size:11.5px;color:rgba(244,240,230,.5);max-width:80ch}}
 .back{{display:inline-block;margin-top:20px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,240,230,.7);text-decoration:none}}
 .social{{display:flex;gap:10px;margin-top:14px}}
-.social a{{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid rgba(244,240,230,.28);border-radius:50%;transition:.18s}}
+.social a{{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(244,240,230,.28);border-radius:50%;transition:.18s}}
+.flogo{{width:30px;height:auto;margin-bottom:10px}}
 .social a:hover{{border-color:var(--terra);background:rgba(192,98,60,.18)}}
 .social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
 .social a:hover svg{{fill:#fff}}
 </style></head><body>
 <nav><div class="navin">
- <div class="brand"><img src="{LG}" alt="Sanders">SANDERS</div>
+ <div class="brand"><img src="{LG_DARK}" alt="Sanders">SANDERS</div>
  <div class="navmid">{esc(cfg['name'])} · {esc(cfg.get('development',''))}</div>
  <a class="btn btn-out" href="mailto:sales@sandersalbania.com?subject={esc(cfg['name'])}%20enquiry">Enquire</a>
 </div></nav>
@@ -151,8 +160,22 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 <section style="padding-top:0"><div class="wrap">
  <p class="eyebrow">Explore the residence</p><h2>Walk it, room by room</h2>
  <p class="lead">Tap any room on the plan to see its size.</p>
- <div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"
-   onload="window.addEventListener('message',function(e){{if(e.data&&e.data.sandersPlanHeight){{var f=document.querySelector('.plan-embed');if(f)f.style.height=(e.data.sandersPlanHeight+8)+'px';}}}})"></iframe></div>
+ <div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div>
+ <script>
+ /* Listener is attached at parse time, before the iframe loads, so no height
+    message can be missed. The plan reports its own content height; nothing here
+    assumes a fixed size. */
+ (function(){{
+   window.addEventListener('message', function(e){{
+     var h = e.data && e.data.sandersPlanHeight;
+     if(!h) return;
+     var f = document.querySelector('.plan-embed');
+     if(!f) return;
+     f.style.minHeight = '0';
+     f.style.height = (h + 2) + 'px';
+   }});
+ }})();
+ </script>
 </div></section>
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 <section class="loc"><div class="wrap">
@@ -162,7 +185,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <a class="back" href="/">← The Collection</a>
 </div></section>
 <footer><div class="wrap"><div class="fgrid">
- <div><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
+ <div><img class="flogo" src="{LG}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
  <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>
   <div class="social">
    <a href="https://www.linkedin.com/company/sanders-albania/" target="_blank" rel="noopener" aria-label="Sanders on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 22 11 22 14.4V21h-4v-5.9c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1V21H9z"/></svg></a>
