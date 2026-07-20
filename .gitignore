@@ -1,0 +1,10 @@
+# macOS / Windows desktop junk
+.DS_Store
+**/.DS_Store
+desktop.ini
+**/desktop.ini
+
+# Raw developer material kept locally alongside the site.
+# This repo is PUBLIC and serves listings.sandersalbania.com — inbound developer
+# files (agreements, economic offers, unpriced brochures) must never be pushed to it.
+Manisteri new batch/
