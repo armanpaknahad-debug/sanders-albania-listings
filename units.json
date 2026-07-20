@@ -232,6 +232,58 @@
       "status": "available",
       "thumb": "ondine/thumb.jpg",
       "href": "ondine/"
+    },
+    {
+      "slug": "isla",
+      "name": "Isla",
+      "development": "Green Coast Resort",
+      "location": "Palasë, Himarë — Albanian Riviera",
+      "price": "On application",
+      "beds": 1,
+      "area": "65.64 m²",
+      "tag": "Third-floor one-bedroom residence",
+      "status": "available",
+      "thumb": "isla/thumb.jpg",
+      "href": "isla/"
+    },
+    {
+      "slug": "nadia",
+      "name": "Nadia",
+      "development": "Green Coast Resort",
+      "location": "Palasë, Himarë — Albanian Riviera",
+      "price": "On application",
+      "beds": 1,
+      "area": "70.93 m²",
+      "tag": "Ground-floor one-bedroom garden residence",
+      "status": "available",
+      "thumb": "nadia/thumb.jpg",
+      "href": "nadia/"
+    },
+    {
+      "slug": "apolline",
+      "name": "Apolline",
+      "development": "Green Coast Resort",
+      "location": "Palasë, Himarë — Albanian Riviera",
+      "price": "On application",
+      "beds": 1,
+      "area": "93.55 m²",
+      "tag": "Top-floor one-bedroom terrace residence",
+      "status": "available",
+      "thumb": "apolline/thumb.jpg",
+      "href": "apolline/"
+    },
+    {
+      "slug": "rosalie",
+      "name": "Rosalie",
+      "development": "Green Coast Resort",
+      "location": "Palasë, Himarë — Albanian Riviera",
+      "price": "On application",
+      "beds": 1,
+      "area": "102.11 m²",
+      "tag": "Second-floor one-bedroom residence",
+      "status": "available",
+      "thumb": "rosalie/thumb.jpg",
+      "href": "rosalie/"
     }
   ]
 }

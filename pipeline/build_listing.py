@@ -47,11 +47,29 @@ def build(cfg, base):
         for u, cap in gal)
     hl_html = "".join(f"<div>{esc(x)}</div>" for x in hl)
 
+    site = cfg.get("site", "https://listings.sandersalbania.com")
+    page_url = f"{site}/{slug}/"
+    og_img = f"{site}/{slug}/thumb.jpg"
+    og_title = f"{cfg['name']} — {cfg.get('development','')} · Sanders"
+
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(cfg['name'])} — {esc(cfg.get('development',''))} · Sanders</title>
 <meta name="description" content="{esc(cfg.get('sub',''))}">
+<link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sanders Albania">
+<meta property="og:title" content="{esc(og_title)}">
+<meta property="og:description" content="{esc(cfg.get('sub',''))}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{og_img}">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="675">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(og_title)}">
+<meta name="twitter:description" content="{esc(cfg.get('sub',''))}">
+<meta name="twitter:image" content="{og_img}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -107,6 +125,11 @@ footer .k{{font-size:10px;letter-spacing:.20em;text-transform:uppercase;color:va
 footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{color:#fff}}
 .disc{{margin-top:30px;padding-top:18px;border-top:1px solid rgba(244,240,230,.14);font-size:11.5px;color:rgba(244,240,230,.5);max-width:80ch}}
 .back{{display:inline-block;margin-top:20px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,240,230,.7);text-decoration:none}}
+.social{{display:flex;gap:10px;margin-top:14px}}
+.social a{{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid rgba(244,240,230,.28);border-radius:50%;transition:.18s}}
+.social a:hover{{border-color:var(--terra);background:rgba(192,98,60,.18)}}
+.social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
+.social a:hover svg{{fill:#fff}}
 </style></head><body>
 <nav><div class="navin">
  <div class="brand"><img src="{LG}" alt="Sanders">SANDERS</div>
@@ -140,7 +163,11 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 </div></section>
 <footer><div class="wrap"><div class="fgrid">
  <div><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
- <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div></div>
+ <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>
+  <div class="social">
+   <a href="https://www.linkedin.com/company/sanders-albania/" target="_blank" rel="noopener" aria-label="Sanders on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 22 11 22 14.4V21h-4v-5.9c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1V21H9z"/></svg></a>
+   <a href="https://www.instagram.com/sanders_int/" target="_blank" rel="noopener" aria-label="Sanders on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2zm0 1.8c-3.14 0-3.51.01-4.75.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71C3.41 8.49 3.4 8.86 3.4 12s.01 3.51.07 4.75c.4.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 0 0-.69-1.06 2.85 2.85 0 0 0-1.06-.69c-.32-.13-.81-.28-1.71-.32C15.51 4.01 15.14 4 12 4zm0 3.05a4.95 4.95 0 1 1 0 9.9 4.95 4.95 0 0 1 0-9.9zm0 1.8a3.15 3.15 0 1 0 0 6.3 3.15 3.15 0 0 0 0-6.3zm5.15-3.24a1.16 1.16 0 1 1 0 2.32 1.16 1.16 0 0 1 0-2.32z"/></svg></a>
+  </div></div>
  <div><p class="k">Offices</p><div>Fox Court, 14 Gray's Inn Road, London WC1X 8HN</div><div style="margin-top:8px">Rruga Mihal Duri 1001, Tirana, Albania</div></div>
 </div><p class="disc">Particulars prepared by Sanders International for guidance only and do not form part of any contract. Areas are approximate and taken from developer drawings. Guide price is indicative and subject to change.</p></div></footer>
 </body></html>"""

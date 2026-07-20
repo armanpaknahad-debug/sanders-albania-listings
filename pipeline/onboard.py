@@ -69,7 +69,7 @@ def extract(args):
             if is_logo(im): continue
             (plans if is_plan(im) else photos).append((im.width*im.height, im, pi, idx)); idx+=1
 
-    photos.sort(reverse=True)
+    photos.sort(key=lambda t: t[0], reverse=True)
     for i,(_,im,_,_) in enumerate(photos[:6]):
         im.save(work/"assets"/(f"hero.jpg" if i==0 else f"g{i}.jpg"), "JPEG", quality=86)
     # render any page that looks like a floor-plan page (full render, Claude will crop per level)
