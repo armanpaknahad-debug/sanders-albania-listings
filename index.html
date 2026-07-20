@@ -57,7 +57,16 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
 .devrow{flex-wrap:wrap;gap:4px 14px}
 .grid{gap:clamp(18px,5vw,30px)}
 @media(max-width:560px){
- .contact{width:100%;font-size:11.5px;margin-top:1px}
+ /* tidy the top bar into a compact left-aligned stack — brand over contact —
+    instead of a cramped space-between row that doesn't fit at 375px */
+ .top{padding:11px 0}
+ .top .wrap{flex-direction:column;align-items:flex-start;gap:3px;flex-wrap:nowrap}
+ .brand{font-size:13px;letter-spacing:.22em;gap:9px}
+ .brand img{width:22px}
+ .contact{width:auto;font-size:11px;margin:0;letter-spacing:.04em}
+ .hero{padding:24px 0 14px}
+ .hero h1,h1{font-size:clamp(30px,8vw,40px);margin:4px 0 10px}
+ .ey{font-size:11px}
  .thumb{height:200px}.cname{font-size:27px}
 }
 </style>

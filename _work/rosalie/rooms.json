@@ -29,22 +29,26 @@
         {
           "name": "Bathroom",
           "area": "1.90 × 3.10 m",
-          "points": "505,25 690,25 690,235 505,235"
+          "points": "505,25 690,25 690,235 505,235",
+          "label": "Bathroom"
         },
         {
           "name": "Entrance hall",
           "area": "1.10 × 4.00 m",
-          "points": "370,20 500,20 500,500 370,500"
+          "points": "370,20 500,20 500,500 370,500",
+          "label": "Hall"
         },
         {
           "name": "Bedroom",
           "area": "7.65 m deep",
-          "points": "205,505 390,505 390,1230 48,1230"
+          "points": "205,505 390,505 390,1230 48,1230",
+          "label": "Bedroom"
         },
         {
           "name": "Living, kitchen & dining",
           "area": "3.15 × 7.95 m",
-          "points": "400,505 690,505 690,1230 400,1230"
+          "points": "400,505 690,505 690,1230 400,1230",
+          "label": "Living\nKitchen\nDining"
         }
       ]
     }

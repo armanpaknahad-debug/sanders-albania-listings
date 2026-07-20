@@ -46,9 +46,12 @@ def main():
 
     tpl = TEMPLATE.read_text(encoding="utf-8")
 
-    # 1) swap the whole sample UNIT = {...}; block for real data
+    # 1) swap the whole sample UNIT = {...}; block for real data.
+    # Use a function replacement — a plain string replacement makes re.sub
+    # interpret backslashes (e.g. an escaped \n in a JSON string, or \1) as
+    # regex escapes, corrupting the emitted JS. A lambda returns it verbatim.
     unit_js = "const UNIT = " + json.dumps(data, ensure_ascii=False, indent=2) + ";"
-    tpl = re.sub(r"const UNIT = \{.*?\n\};", unit_js, tpl, count=1, flags=re.S)
+    tpl = re.sub(r"const UNIT = \{.*?\n\};", lambda _m: unit_js, tpl, count=1, flags=re.S)
 
     # 2) fill the static placeholders (correct first paint before JS runs)
     tpl = tpl.replace("__UNIT_NAME__", data["name"])

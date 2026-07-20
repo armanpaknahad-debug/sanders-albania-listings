@@ -58,6 +58,13 @@
   .hot.sel{ fill:rgba(192,98,60,.24); stroke:var(--terra); stroke-width:3; }
   .hot.outdoor:hover{ fill:rgba(201,169,97,.16); }
   .hot.outdoor.sel{ fill:rgba(201,169,97,.28); stroke:var(--gold); stroke-width:2.5; }
+  /* room-name labels drawn on top of the real drawing (image mode). An ivory
+     halo (paint-order:stroke) keeps them legible over furniture and floor tone. */
+  .imglabel{ font-family:var(--sans); font-weight:600; fill:var(--green);
+    text-anchor:middle; pointer-events:none; letter-spacing:.05em;
+    paint-order:stroke; stroke:rgba(250,247,239,.94); stroke-width:7px;
+    stroke-linejoin:round; text-transform:uppercase; }
+  .imglabel.outdoor{ fill:#8a6a2c; }
 
   .room{ fill:rgba(28,58,46,.045); stroke:var(--line); stroke-width:2.4;
     stroke-linejoin:round; cursor:pointer; transition:fill .16s ease; }
@@ -158,22 +165,26 @@ const UNIT = {
         {
           "name": "Bathroom",
           "area": "2.90 × 1.70 m",
-          "points": "30,30 345,30 345,240 30,240"
+          "points": "30,30 345,30 345,240 30,240",
+          "label": "Bathroom"
         },
         {
           "name": "Bedroom",
           "area": "2.80 × 4.35 m",
-          "points": "25,360 335,360 335,800 25,800"
+          "points": "25,360 335,360 335,800 25,800",
+          "label": "Bedroom"
         },
         {
           "name": "Living, kitchen & dining",
           "area": "3.00 m wide",
-          "points": "355,25 665,25 665,800 355,800"
+          "points": "355,25 665,25 665,800 355,800",
+          "label": "Living\nKitchen\nDining"
         },
         {
           "name": "Private patio",
           "area": "42.83 m²",
           "points": "75,845 710,845 710,1105 75,1105",
+          "label": "Private\nPatio",
           "outdoor": true
         }
       ]
@@ -223,6 +234,24 @@ function renderLevel(i){
     const ov=document.createElementNS(SVGNS,"svg"); ov.setAttribute("class","overlay");
     ov.setAttribute("viewBox", lvl.viewbox); ov.setAttribute("preserveAspectRatio","none");
     lvl.rooms.forEach(room=> ov.appendChild(makeHot(room,"hot")));
+    // room-name labels sit above the hotspots. font-size scales to the drawing.
+    var vbw=parseFloat(lvl.viewbox.split(/\s+/)[2])||1000;
+    var fs=Math.round(vbw*0.030);
+    lvl.rooms.forEach(function(room){
+      var c=centroid(room.points);
+      var lines=(room.label||room.name).split("\n");
+      var t=document.createElementNS(SVGNS,"text");
+      t.setAttribute("x",c[0]); t.setAttribute("y",c[1]);
+      t.setAttribute("class","imglabel"+(room.outdoor?" outdoor":""));
+      t.setAttribute("font-size",fs);
+      var y0=c[1]-(lines.length-1)*fs*0.6;
+      lines.forEach(function(ln,li){
+        var ts=document.createElementNS(SVGNS,"tspan");
+        ts.setAttribute("x",c[0]); ts.setAttribute("y",y0+li*fs*1.2);
+        ts.textContent=ln; t.appendChild(ts);
+      });
+      ov.appendChild(t);
+    });
     wrap.appendChild(img); wrap.appendChild(ov); card.appendChild(wrap);
     img.addEventListener("load",()=>{ try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){} });
   } else {

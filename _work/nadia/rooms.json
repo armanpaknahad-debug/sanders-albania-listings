@@ -29,22 +29,26 @@
         {
           "name": "Bathroom",
           "area": "2.90 × 1.70 m",
-          "points": "30,30 345,30 345,240 30,240"
+          "points": "30,30 345,30 345,240 30,240",
+          "label": "Bathroom"
         },
         {
           "name": "Bedroom",
           "area": "2.80 × 4.35 m",
-          "points": "25,360 335,360 335,800 25,800"
+          "points": "25,360 335,360 335,800 25,800",
+          "label": "Bedroom"
         },
         {
           "name": "Living, kitchen & dining",
           "area": "3.00 m wide",
-          "points": "355,25 665,25 665,800 355,800"
+          "points": "355,25 665,25 665,800 355,800",
+          "label": "Living\nKitchen\nDining"
         },
         {
           "name": "Private patio",
           "area": "42.83 m²",
           "points": "75,845 710,845 710,1105 75,1105",
+          "label": "Private\nPatio",
           "outdoor": true
         }
       ]
