@@ -261,7 +261,7 @@ function renderLevel(i){
       ov.appendChild(t);
     });
     wrap.appendChild(img); wrap.appendChild(ov); card.appendChild(wrap);
-    img.addEventListener("load",()=>{ try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){} });
+    img.addEventListener("load", postH);
   } else {
     const s=document.createElementNS(SVGNS,"svg"); s.setAttribute("class","plan");
     s.setAttribute("viewBox", lvl.viewbox); s.setAttribute("preserveAspectRatio","xMidYMid meet");
@@ -276,7 +276,7 @@ function renderLevel(i){
     card.appendChild(s);
   }
   Array.from(levelsBar.children).forEach((b,bi)=>b.setAttribute("aria-selected", bi===i?"true":"false"));
-  try{ parent.postMessage({sandersPlanHeight: document.documentElement.scrollHeight}, "*"); }catch(e){}
+  postH();
 }
 function boot(){
   document.getElementById("unit").textContent=UNIT.name;
@@ -297,26 +297,36 @@ function boot(){
   if(UNIT.levels.length<=1) levelsBar.style.display="none";
   renderLevel(0);
 }
-// Height sync when embedded in a listing. The parent sizes the iframe from this
-// number alone, so it must be re-sent whenever the content box can change:
-// image decode, font swap, level switch, orientation change.
-function measure(){
-  var b=document.body, d=document.documentElement;
-  return Math.ceil(Math.max(b.scrollHeight, d.scrollHeight, b.offsetHeight, d.offsetHeight));
+/* PLAN-HEIGHT-FIX — do not remove; breaks the resize feedback loop.
+   The old code measured document/body scrollHeight and posted it to the parent,
+   which sized the iframe to it. But documentElement.scrollHeight equals the
+   iframe's own viewport height once the parent applies our number, so we were
+   measuring the height we'd just been given: measure -> parent sets (+buffer) ->
+   iframe 'resize' fires -> re-measure the bigger viewport -> grow, every tick.
+   Fix: measure the CONTENT wrapper only (its height is driven by content/width,
+   never by the iframe's height), and OBSERVE that same wrapper — so a height-only
+   iframe resize changes neither the measurement nor the observed box and cannot
+   re-fire. A genuine width change (column reflow / rotate) still re-syncs. Sub-3px
+   deltas are ignored and a burst cap disconnects as a last-resort runaway guard. */
+function planContentHeight(){
+  var w=document.querySelector(".wrap");
+  return Math.ceil(w ? w.getBoundingClientRect().height : document.body.offsetHeight);
 }
-var lastH=0;
-function postH(){
-  try{
-    var h=measure();
-    if(h && h!==lastH){ lastH=h; parent.postMessage({sandersPlanHeight: h}, "*"); }
-  }catch(e){}
+var lastH=0, posts=0, ro=null, queued=false;
+function flush(){
+  queued=false;
+  var h=planContentHeight();
+  if(!h || Math.abs(h-lastH)<3) return;      // no-op / sub-pixel jitter -> don't post
+  lastH=h;
+  try{ parent.postMessage({sandersPlanHeight: h}, "*"); }catch(e){}
+  if(++posts>40 && ro){ ro.disconnect(); ro=null; }   // runaway guard (should never trip)
 }
-window.addEventListener("load", ()=>{ postH(); setTimeout(postH,120); setTimeout(postH,400); });
-window.addEventListener("resize", postH);
-window.addEventListener("orientationchange", ()=>setTimeout(postH,150));
+function postH(){ if(queued) return; queued=true; (window.requestAnimationFrame||function(f){setTimeout(f,16);})(flush); }
+window.addEventListener("load", function(){ postH(); setTimeout(postH,120); setTimeout(postH,400); });
+window.addEventListener("resize", postH);   // safe now: a height-only resize leaves content height unchanged -> bailed
+window.addEventListener("orientationchange", function(){ setTimeout(postH,150); });
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(postH);
-// catches anything the explicit hooks miss (image decode, late reflow)
-if(window.ResizeObserver) new ResizeObserver(postH).observe(document.body);
+if(window.ResizeObserver){ ro=new ResizeObserver(postH); ro.observe(document.querySelector(".wrap")||document.body); }
 boot();
 postH();
 </script>
