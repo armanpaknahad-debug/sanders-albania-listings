@@ -73,6 +73,19 @@ def build(cfg, base):
             "<figcaption>Position in three dimensions</figcaption></figure>"
             "</div></div></section>")
 
+    # interactive plan section — omitted for units whose plan isn't ready yet
+    plan_html = ""
+    if cfg.get("has_plan", True):
+        plan_html = (
+            '<section style="padding-top:0"><div class="wrap">'
+            '<p class="eyebrow">Explore the residence</p><h2>Walk it, room by room</h2>'
+            '<p class="lead">Tap any room on the plan to see its size.</p>'
+            '<div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div>'
+            '<script>(function(){window.addEventListener("message",function(e){var h=e.data&&e.data.sandersPlanHeight;'
+            'if(!h)return;var f=document.querySelector(".plan-embed");if(!f)return;f.style.minHeight="0";'
+            'f.style.height=(h+2)+"px";});})();</script>'
+            '</div></section>')
+
     site = cfg.get("site", "https://listings.sandersalbania.com")
     page_url = f"{site}/{slug}/"
     og_img = f"{site}/{slug}/thumb.jpg"
@@ -180,26 +193,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <p class="eyebrow">The residence</p><h2>{esc(cfg['name'])}</h2>
  <p class="lead">{esc(cfg.get('description',''))}</p>
 </div></section>
-<section style="padding-top:0"><div class="wrap">
- <p class="eyebrow">Explore the residence</p><h2>Walk it, room by room</h2>
- <p class="lead">Tap any room on the plan to see its size.</p>
- <div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div>
- <script>
- /* Listener is attached at parse time, before the iframe loads, so no height
-    message can be missed. The plan reports its own content height; nothing here
-    assumes a fixed size. */
- (function(){{
-   window.addEventListener('message', function(e){{
-     var h = e.data && e.data.sandersPlanHeight;
-     if(!h) return;
-     var f = document.querySelector('.plan-embed');
-     if(!f) return;
-     f.style.minHeight = '0';
-     f.style.height = (h + 2) + 'px';
-   }});
- }})();
- </script>
-</div></section>
+{plan_html}
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 {position_html}
 <section class="loc"><div class="wrap">
