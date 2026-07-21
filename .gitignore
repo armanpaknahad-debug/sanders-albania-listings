@@ -21,3 +21,8 @@ g8/
 # Source spreadsheets (unit registers etc.) — working docs, not web assets.
 *.xlsx
 **/*.xlsx
+
+# _work/ is the pipeline's build-scratch (per-unit config.json + raw assets like
+# hero.jpg/g1.jpg). Never web content — the live files are /<slug>/index.html,
+# /<slug>/thumb.jpg, units.json and gallery index.html. Ignore it whole.
+_work/
