@@ -84,7 +84,8 @@
   .panel{ position:sticky; top:20px; }
   @media (max-width:760px){ .panel{ position:static; } }
   .detail{ background:var(--green); color:var(--ivory-2); border-radius:10px;
-    padding:22px 22px 24px; min-height:150px; }
+    padding:20px 22px 22px; }
+  @media(min-width:761px){ .detail{ min-height:150px; } }
   .detail .hint{ font-size:13.5px; color:rgba(244,240,230,.72); }
   .detail .rname{ font-family:var(--disp); font-style:italic; font-weight:600;
     font-size:29px; line-height:1.05; margin:2px 0 12px; }
@@ -228,7 +229,7 @@ function renderLevel(i){
     var vbw=parseFloat(lvl.viewbox.split(/\s+/)[2])||1000;
     var fs=Math.round(vbw*0.030);
     lvl.rooms.forEach(function(room){
-      var c=centroid(room.points);
+      var c=room.labelAt || centroid(room.points);
       var lines=(room.label||room.name).split("\n");
       var t=document.createElementNS(SVGNS,"text");
       t.setAttribute("x",c[0]); t.setAttribute("y",c[1]);

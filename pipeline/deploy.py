@@ -102,6 +102,8 @@ def main():
     ap.add_argument("slugs", nargs="*", help="unit slugs to push")
     ap.add_argument("--token", default=os.environ.get("GITHUB_TOKEN"))
     ap.add_argument("--extra", nargs="*", default=[], help="additional repo-relative paths")
+    ap.add_argument("--delete", nargs="*", default=[], help="repo-relative paths to delete")
+    ap.add_argument("--message", help="commit message")
     ap.add_argument("--no-gallery", action="store_true", help="skip index.html + units.json")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -129,13 +131,39 @@ def main():
             files.append((root / name, name))
 
     label = ", ".join(args.slugs) or "files"
-    message = f"Add {label} to the Sanders Albania collection"
+    message = args.message or f"Add {label} to the Sanders Albania collection"
     print(f"Pushing {len(files)} files to {REPO}@{BRANCH}")
     for local, path in files:
         put_file(local, path, args.token, message, dry=args.dry_run)
+    for path in args.delete:
+        delete_file(path, args.token, message, dry=args.dry_run)
     print("\nDone.")
     for slug in args.slugs:
         print(f"  https://listings.sandersalbania.com/{slug}/")
+
+
+def delete_file(path, token, message, dry=False):
+    if dry:
+        print(f"  [dry-run] DELETE {path}")
+        return
+    for attempt in range(1, MAX_TRIES + 1):
+        sha = get_sha(path, token)
+        if sha is None:
+            print(f"  already gone {path}")
+            return
+        try:
+            data = json.dumps({"message": message, "sha": sha, "branch": BRANCH}).encode()
+            r = urllib.request.Request(f"{API}{path}", data=data, method="DELETE", headers={
+                "Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "sanders-deploy",
+                "Content-Type": "application/json"})
+            with urllib.request.urlopen(r, timeout=120):
+                print(f"  deleted {path}")
+            return
+        except urllib.error.HTTPError as e:
+            if e.code == 409 and attempt < MAX_TRIES:
+                time.sleep(BACKOFF); continue
+            raise SystemExit(f"FAILED delete {path}: HTTP {e.code} {e.read().decode()[:150]}")
 
 
 if __name__ == "__main__":
