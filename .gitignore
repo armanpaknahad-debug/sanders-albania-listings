@@ -9,6 +9,10 @@ desktop.ini
 # files (agreements, economic offers, unpriced brochures) must never be pushed to it.
 Manisteri new batch/
 
+# g8/ is a local staging folder for brochures + developer PDFs (A/B unit codes,
+# ~60MB each) and the naming register. None of it is web content — ignore it whole.
+g8/
+
 # Brochure source PDFs (multi-MB marketing source, not web assets). Kept locally
 # in the unit/g8 folders but never committed to the public site repo.
 *_Sanders.pdf
