@@ -55,6 +55,24 @@ def build(cfg, base):
         for u, cap in gal)
     hl_html = "".join(f"<div>{esc(x)}</div>" for x in hl)
 
+    # Position within the village (brochure "The Position" page): copy + village plan + 3D view
+    pos_copy = cfg.get("position_copy", "")
+    vill = datauri(base/cfg["village_img"], 1500) if cfg.get("village_img") else ""
+    p3d  = datauri(base/cfg["pos3d_img"], 1500) if cfg.get("pos3d_img") else ""
+    position_html = ""
+    if pos_copy and vill and p3d:
+        position_html = (
+            "<section style='padding-top:0'><div class='wrap'>"
+            "<p class='eyebrow'>Position within Green Coast</p>"
+            f"<h2>Where {esc(cfg['name'])} sits</h2>"
+            f"<p class='lead'>{esc(pos_copy)}</p>"
+            "<div class='posimgs'>"
+            f"<figure><img src='{vill}' alt='{esc(cfg['name'])} marked on the Green Coast village plan'>"
+            f"<figcaption>The village plan · {esc(cfg['name'])} marked</figcaption></figure>"
+            f"<figure><img src='{p3d}' alt='Position in three dimensions'>"
+            "<figcaption>Position in three dimensions</figcaption></figure>"
+            "</div></div></section>")
+
     site = cfg.get("site", "https://listings.sandersalbania.com")
     page_url = f"{site}/{slug}/"
     og_img = f"{site}/{slug}/thumb.jpg"
@@ -121,6 +139,11 @@ section{{padding:clamp(46px,9vw,84px) 0}}
 .gal figure{{margin:0;position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10}}
 .gal img{{width:100%;height:100%;object-fit:cover}}
 .gal figcaption{{position:absolute;left:14px;bottom:12px;color:#fff;font-size:11px;letter-spacing:.20em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.5)}}
+.posimgs{{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:26px}}
+@media(max-width:680px){{.posimgs{{grid-template-columns:1fr}}}}
+.posimgs figure{{margin:0;background:var(--ivory2);border:1px solid rgba(28,58,46,.1);border-radius:10px;overflow:hidden}}
+.posimgs img{{width:100%;height:auto;display:block}}
+.posimgs figcaption{{padding:10px 14px 12px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#6b7a71}}
 .loc{{background:var(--green);color:var(--ivory2)}}.loc h2{{color:var(--ivory2)}}.loc .lead{{color:rgba(244,240,230,.86)}}
 .hl{{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;margin-top:24px;max-width:720px}}
 @media(max-width:560px){{.hl{{grid-template-columns:1fr}}}}
@@ -178,6 +201,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  </script>
 </div></section>
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
+{position_html}
 <section class="loc"><div class="wrap">
  <p class="eyebrow">Location &amp; setting</p><h2>{esc(cfg.get('location_h2','Location & setting'))}</h2>
  <p class="lead">{esc(cfg.get('location_body',''))}</p>

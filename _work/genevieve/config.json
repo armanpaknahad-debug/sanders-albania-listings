@@ -36,31 +36,31 @@
     ]
   ],
   "highlights": [
-    "Calm, well-lit 92 m² plan",
-    "Private parking bay",
-    "At the centre of the resort",
-    "Blue Flag beach below the resort"
+    "Upper centre, on the lane down from the hotel",
+    "92.20 m² · calm, well-lit plan",
+    "Private parking bay · 12.5 m²",
+    "Stone-built village · travertine & timber",
+    "Pools & Blue Flag beach below the resort"
   ],
-  "location_h2": "Green Coast, Palasë — the Albanian Riviera",
-  "location_body": "Green Coast sits on the Palasë stretch of the Albanian Riviera, where the Ceraunian hillside drops to the Ionian. The resort is built as a stone village — plazas, promenades and pools threaded between terraced buildings — with a Blue Flag beach below and Himarë along the coast. It is Albania's most established seaside address, and the residences sit inside it rather than alongside it.",
+  "location_h2": "Life at Green Coast",
+  "location_body": "Green Coast is the Albanian Riviera's most established resort address — a stone-built village above the Blue Flag beach at Palasë, where the Ceraunian mountains meet the Ionian. Mediterranean architecture in local stone, travertine and timber; promenades, pools, restaurants and a beach club below; the life of the coast a few steps from the door.",
   "site": "https://listings.sandersalbania.com",
   "hero": "assets/hero.jpg",
   "gallery": [
     [
       "assets/g1.jpg",
-      "The Riviera coast · Palasë"
+      "The village · artist's impression"
     ],
     [
       "assets/g2.jpg",
-      "The Riviera coast · Palasë"
+      "The gardens · artist's impression"
     ],
     [
       "assets/g3.jpg",
-      "The Riviera coast · Palasë"
-    ],
-    [
-      "assets/g4.jpg",
-      "Green Coast · Artist's impression"
+      "Green Coast · artist's impression"
     ]
-  ]
+  ],
+  "position_copy": "Geneviève sits in the upper centre of the village, on the lane that leads down from the hotel. The central plaza is a short walk below, the parking entrance just beyond it, and the paths down to the beach begin at the village edge.",
+  "village_img": "assets/village.jpg",
+  "pos3d_img": "assets/pos3d.jpg"
 }
