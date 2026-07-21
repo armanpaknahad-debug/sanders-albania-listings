@@ -43,6 +43,9 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
 .foot{background:#1C3A2E;color:#9FB1A4;padding:34px 0;text-align:center;font-size:13px;letter-spacing:.06em}
 .foot b{color:#F4F0E6;font-weight:500;letter-spacing:.2em;display:block;margin-bottom:8px}
 @media(max-width:560px){.wrap{padding:0 30px}.hero{padding:44px 0 18px}.hero h1{font-size:36px}.grid{gap:22px;padding:18px 0 6px}.devname{font-size:31px}.devsec{padding:28px 30px 20px}.thumb{height:200px}.cbody{padding:18px 20px 20px}}
+.blockband{grid-column:1/-1;font-family:'DMSans',sans-serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#6b7a71;font-weight:600;padding:10px 0 2px;margin-top:8px;border-top:1px solid #E4DECF}
+.grid>.blockband:first-child{border-top:0;margin-top:0}
+.blockchip{position:absolute;top:14px;right:14px;background:rgba(28,58,46,.92);color:#F4F0E6;font-size:9.5px;letter-spacing:.14em;font-weight:600;padding:5px 9px;border-radius:2px}
 </style><style id="sanders-polish">
 .top{padding:15px 0}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
@@ -151,8 +154,9 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
   <div class="dev-eyebrow">PALASË · ALBANIAN RIVIERA</div>
   <div class="devrow"><h2 class="devname">Green Coast Resort</h2><span class="devcount">27 residences</span></div>
   <div class="devstrap">Terraced hillside residences above the Ionian</div>
-  <div class="grid"><a class="card" href="sabine/">
-      <div class="thumb" style="background-image:url('sabine/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+  <div class="grid"><div class="blockband">Block F</div>
+    <a class="card" href="sabine/">
+      <div class="thumb" style="background-image:url('sabine/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Sabine</div>
@@ -162,7 +166,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="juliette/">
-      <div class="thumb" style="background-image:url('juliette/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('juliette/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Juliette</div>
@@ -172,7 +176,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="adele/">
-      <div class="thumb" style="background-image:url('adele/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('adele/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Adèle</div>
@@ -182,7 +186,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="noemie/">
-      <div class="thumb" style="background-image:url('noemie/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('noemie/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Noémie</div>
@@ -192,7 +196,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="camille/">
-      <div class="thumb" style="background-image:url('camille/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('camille/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Camille</div>
@@ -202,7 +206,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="sylvie/">
-      <div class="thumb" style="background-image:url('sylvie/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('sylvie/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Sylvie</div>
@@ -212,7 +216,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="helene/">
-      <div class="thumb" style="background-image:url('helene/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('helene/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Hélène</div>
@@ -222,7 +226,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="colette/">
-      <div class="thumb" style="background-image:url('colette/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('colette/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Colette</div>
@@ -232,7 +236,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="eloise/">
-      <div class="thumb" style="background-image:url('eloise/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('eloise/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Éloïse</div>
@@ -242,7 +246,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
       </div>
     </a>
 <a class="card" href="marguerite/">
-      <div class="thumb" style="background-image:url('marguerite/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('marguerite/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">F</span></div>
       <div class="cbody">
         
         <div class="cname">Marguerite</div>
@@ -250,8 +254,9 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cmeta">2 Bed · Duplex · 152.88 m²</div>
         <div class="cprice">On application</div>
       </div>
-    </a><a class="card" href="isla/">
-      <div class="thumb" style="background-image:url('isla/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+    </a><div class="blockband">Zona G8</div>
+    <a class="card" href="isla/">
+      <div class="thumb" style="background-image:url('isla/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Isla</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -259,7 +264,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="amelie/">
-      <div class="thumb" style="background-image:url('amelie/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('amelie/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Amélie</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -267,7 +272,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="capucine/">
-      <div class="thumb" style="background-image:url('capucine/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('capucine/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Capucine</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -275,7 +280,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="elodie/">
-      <div class="thumb" style="background-image:url('elodie/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('elodie/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Élodie</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -283,7 +288,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="fleur/">
-      <div class="thumb" style="background-image:url('fleur/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('fleur/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Fleur</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -291,7 +296,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="genevieve/">
-      <div class="thumb" style="background-image:url('genevieve/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('genevieve/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Geneviève</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -299,7 +304,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="josephine/">
-      <div class="thumb" style="background-image:url('josephine/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('josephine/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Joséphine</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -307,7 +312,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="lucille/">
-      <div class="thumb" style="background-image:url('lucille/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('lucille/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Lucille</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -315,7 +320,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="mirabelle/">
-      <div class="thumb" style="background-image:url('mirabelle/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('mirabelle/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Mirabelle</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -323,7 +328,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="ninon/">
-      <div class="thumb" style="background-image:url('ninon/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('ninon/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Ninon</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
@@ -331,15 +336,16 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="berenice/">
-      <div class="thumb" style="background-image:url('berenice/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('berenice/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G8</span></div>
       <div class="cbody">
         <div class="cname">Bérénice</div>
         <div class="cloc">Palasë, Himarë — Albanian Riviera</div>
         <div class="cmeta">2 Bed · 140.63 m²</div>
         <div class="cprice">On application</div>
       </div>
-    </a><a class="card" href="roxane/">
-      <div class="thumb" style="background-image:url('roxane/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+    </a><div class="blockband">Block G17</div>
+    <a class="card" href="roxane/">
+      <div class="thumb" style="background-image:url('roxane/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Roxane</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
@@ -347,7 +353,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="sidonie/">
-      <div class="thumb" style="background-image:url('sidonie/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('sidonie/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Sidonie</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
@@ -355,7 +361,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="clemence/">
-      <div class="thumb" style="background-image:url('clemence/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('clemence/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Clémence</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
@@ -363,7 +369,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="albertine/">
-      <div class="thumb" style="background-image:url('albertine/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('albertine/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Albertine</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
@@ -371,7 +377,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="emeline/">
-      <div class="thumb" style="background-image:url('emeline/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('emeline/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Émeline</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
@@ -379,7 +385,7 @@ body{font-family:'DMSans',sans-serif;color:#2A2A26;background:#F4F0E6;line-heigh
         <div class="cprice">On application</div>
       </div>
     </a><a class="card" href="ombeline/">
-      <div class="thumb" style="background-image:url('ombeline/thumb.jpg')"><span class="badge">AVAILABLE</span></div>
+      <div class="thumb" style="background-image:url('ombeline/thumb.jpg')"><span class="badge">AVAILABLE</span><span class="blockchip">G17</span></div>
       <div class="cbody">
         <div class="cname">Ombeline</div>
         <div class="cloc">Green Coast — Block G17, Palasë, Himarë</div>
