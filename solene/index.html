@@ -111,7 +111,8 @@ footer a{color:rgba(244,240,230,.82);text-decoration:none}footer a:hover{color:#
 <section class="floorplan"><div class="wrap">
 <h2>Floor plan</h2>
 <div style="width:54px;height:3px;background:#C0623C;margin:0 0 22px"></div>
-<img src="../assets/plans/plan-solene.webp" alt="Solène — floor plan, Green Coast Plot F" loading="lazy" width="1500" height="1688" style="display:block;width:100%;height:auto;border-radius:10px">
+<div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div>
+<script>(function(){window.addEventListener("message",function(e){var h=e.data&&e.data.sandersPlanHeight;if(!h)return;var f=document.querySelector(".plan-embed");if(!f)return;f.style.minHeight="0";f.style.height=(h+2)+"px";});})();</script>
 <p style="font-family:inherit;font-size:13px;letter-spacing:.04em;color:#8a8578;margin:12px 0 0">Solène · 1 Bed, Floor 4 · Green Coast Plot F</p>
 </div></section>
 
