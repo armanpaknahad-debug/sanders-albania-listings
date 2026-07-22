@@ -2,6 +2,45 @@
   "collection": "Sanders Albania — Residences",
   "units": [
     {
+      "slug": "celestine",
+      "name": "Célestine",
+      "development": "Green Coast Resort",
+      "location": "Green Coast — Block F, Palasë, Himarë",
+      "price": "On application",
+      "beds": 1,
+      "area": "138.97 m²",
+      "tag": "1+1 sea-view residence",
+      "status": "available",
+      "thumb": "celestine/thumb.jpg",
+      "href": "celestine/"
+    },
+    {
+      "slug": "solene",
+      "name": "Solène",
+      "development": "Green Coast Resort",
+      "location": "Green Coast — Block F, Palasë, Himarë",
+      "price": "On application",
+      "beds": 1,
+      "area": "87.95 m²",
+      "tag": "1+1 sea-view residence",
+      "status": "available",
+      "thumb": "solene/thumb.jpg",
+      "href": "solene/"
+    },
+    {
+      "slug": "blandine",
+      "name": "Blandine",
+      "development": "Green Coast Resort",
+      "location": "Green Coast — Block F, Palasë, Himarë",
+      "price": "On application",
+      "beds": 1,
+      "area": "111.48 m²",
+      "tag": "1+1 sea-view residence",
+      "status": "available",
+      "thumb": "blandine/thumb.jpg",
+      "href": "blandine/"
+    },
+    {
       "slug": "seraphine",
       "name": "Séraphine",
       "development": "San Pietro Resort",
