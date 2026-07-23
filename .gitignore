@@ -26,3 +26,7 @@ g8/
 # hero.jpg/g1.jpg). Never web content — the live files are /<slug>/index.html,
 # /<slug>/thumb.jpg, units.json and gallery index.html. Ignore it whole.
 _work/
+
+# Build-input JSON for the Manastiri batch (unit specs + source brochure/hero/plan
+# filenames). Source data the pages were generated from, not web content.
+assets/plans/manastiri_units.json
