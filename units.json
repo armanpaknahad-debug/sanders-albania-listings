@@ -439,6 +439,54 @@
    "href": "agnes/"
   },
   {
+   "slug": "alienor",
+   "name": "Aliénor",
+   "development": "Manastiri Bay Resort",
+   "location": "Manastiri Bay — Albanian Riviera",
+   "price": "Price on application",
+   "meta": "Villa · 365.08 m²",
+   "tag": "Detached villa with private pool",
+   "status": "available",
+   "thumb": "alienor/thumb.jpg",
+   "href": "alienor/"
+  },
+  {
+   "slug": "hortense",
+   "name": "Hortense",
+   "development": "Manastiri Bay Resort",
+   "location": "Manastiri Bay — Albanian Riviera",
+   "price": "Price on application",
+   "meta": "Villa · 268.69 m²",
+   "tag": "Detached villa",
+   "status": "available",
+   "thumb": "hortense/thumb.jpg",
+   "href": "hortense/"
+  },
+  {
+   "slug": "sixtine",
+   "name": "Sixtine",
+   "development": "Manastiri Bay Resort",
+   "location": "Manastiri Bay — Albanian Riviera",
+   "price": "Price on application",
+   "meta": "Mansion · 712.75 m²",
+   "tag": "Private mansion with private pool",
+   "status": "available",
+   "thumb": "sixtine/thumb.jpg",
+   "href": "sixtine/"
+  },
+  {
+   "slug": "philippine",
+   "name": "Philippine",
+   "development": "Manastiri Bay Resort",
+   "location": "Manastiri Bay — Albanian Riviera",
+   "price": "Price on application",
+   "meta": "Mansion · 715.15 m²",
+   "tag": "Private mansion with private pool",
+   "status": "available",
+   "thumb": "philippine/thumb.jpg",
+   "href": "philippine/"
+  },
+  {
    "slug": "ondine",
    "name": "Ondine",
    "development": "Turquoise Marina",
