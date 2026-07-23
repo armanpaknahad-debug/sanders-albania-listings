@@ -30,3 +30,15 @@ _work/
 # Build-input JSON for the Manastiri batch (unit specs + source brochure/hero/plan
 # filenames). Source data the pages were generated from, not web content.
 assets/plans/manastiri_units.json
+
+# The Sanders name -> developer unit code mapping. It defeats the white-labelling
+# the business model rests on, so it lives OUTSIDE this repo entirely
+# (~/Claude-Projects/sanders-internal/) and must never be committed here — not even
+# if this repo is made private. Belt and braces: ignore both paths and all CSVs.
+internal/unit_codes.json
+Internal/unit_codes.json
+internal/register.csv
+Internal/register.csv
+*.csv
+**/*.csv
+

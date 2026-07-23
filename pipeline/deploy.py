@@ -15,7 +15,7 @@ Slugs push <slug>/index.html, <slug>/plan.html and <slug>/thumb.jpg. The shared
 gallery files (index.html, units.json) go up once at the end, after the unit
 pages exist, so the gallery never links to a page that isn't live yet.
 """
-import argparse, base64, json, os, sys, time, urllib.error, urllib.request
+import argparse, base64, json, os, subprocess, sys, time, urllib.error, urllib.request
 from pathlib import Path
 
 REPO = os.environ.get("SANDERS_REPO", "armanpaknahad-debug/sanders-albania-listings")
@@ -97,6 +97,35 @@ def put_file(local: Path, path: str, token: str, message: str, dry=False):
     raise SystemExit(f"FAILED {path}: retries exhausted")
 
 
+def register_script(root):
+    """internal/build_register.py, whichever case the folder is on disk."""
+    for name in ("internal", "Internal"):
+        p = root / name / "build_register.py"
+        if p.exists():
+            return p
+    return None
+
+
+def refuse_internal(paths):
+    """internal/ holds developer unit codes (A04, BR-05-1/2, VR-14). A client must
+    never see one, so nothing under it is ever pushed — not even via --extra."""
+    bad = [p for p in paths if p.replace("\\", "/").split("/")[0].lower() == "internal"]
+    if bad:
+        raise SystemExit(f"REFUSED: internal/ is never published — {', '.join(bad)}")
+
+
+def check_register(root):
+    """Fail the deploy if the internal register and units.json have drifted apart."""
+    script = register_script(root)
+    if script is None:
+        return
+    r = subprocess.run([sys.executable, str(script), "--check"],
+                       capture_output=True, text=True)
+    if r.returncode:
+        print(r.stdout + r.stderr, end="")
+        raise SystemExit("register check failed - reconcile unit_codes.json before deploying.")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("slugs", nargs="*", help="unit slugs to push")
@@ -112,6 +141,8 @@ def main():
         raise SystemExit("No token. Pass --token or set GITHUB_TOKEN.")
 
     root = Path(__file__).resolve().parent.parent
+    refuse_internal(list(args.slugs) + list(args.extra) + list(args.delete))
+    check_register(root)
     files = []
     for slug in args.slugs:
         for name in ("index.html", "plan.html", "thumb.jpg"):
