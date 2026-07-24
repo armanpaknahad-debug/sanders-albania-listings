@@ -642,6 +642,58 @@
    "status": "available",
    "thumb": "berenice/thumb.jpg",
    "href": "berenice/"
+  },
+  {
+   "slug": "oriane",
+   "name": "Oriane",
+   "development": "by Long Hill Residence",
+   "location": "Mjull Bathore, Tirana, Albania",
+   "price": "€345,000 – 360,000",
+   "beds": 2,
+   "area": "171.42 m²",
+   "tag": "2+1 ground-floor residence",
+   "status": "available",
+   "thumb": "oriane/thumb.jpg",
+   "href": "oriane/"
+  },
+  {
+   "slug": "thais",
+   "name": "Thaïs",
+   "development": "by Long Hill Residence",
+   "location": "Mjull Bathore, Tirana, Albania",
+   "price": "€285,000 – 300,000",
+   "beds": 2,
+   "area": "143.33 m²",
+   "tag": "2+1 ground-floor residence",
+   "status": "available",
+   "thumb": "thais/thumb.jpg",
+   "href": "thais/"
+  },
+  {
+   "slug": "maelys",
+   "name": "Maëlys",
+   "development": "by Long Hill Residence",
+   "location": "Mjull Bathore, Tirana, Albania",
+   "price": "€285,000 – 300,000",
+   "beds": 2,
+   "area": "143.58 m²",
+   "tag": "2+1 ground-floor residence",
+   "status": "available",
+   "thumb": "maelys/thumb.jpg",
+   "href": "maelys/"
+  },
+  {
+   "slug": "penelope",
+   "name": "Pénélope",
+   "development": "by Long Hill Residence",
+   "location": "Mjull Bathore, Tirana, Albania",
+   "price": "€320,000 – 340,000",
+   "beds": 2,
+   "area": "160.88 m²",
+   "tag": "2+1 ground-floor residence",
+   "status": "available",
+   "thumb": "penelope/thumb.jpg",
+   "href": "penelope/"
   }
  ]
 }
