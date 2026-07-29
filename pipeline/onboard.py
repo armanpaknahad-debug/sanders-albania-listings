@@ -24,6 +24,8 @@ from PIL import Image, ImageStat, ImageChops, ImageOps
 
 HERE = Path(__file__).resolve().parent
 LIB  = HERE / "lib"
+sys.path.insert(0, str(LIB))
+import imaging  # shared watermark engine (apply_watermark / require_watermarking)
 
 def slugify(s):
     s = re.sub(r"[^\w\s-]", "", (s or "").lower()).strip()
@@ -135,6 +137,7 @@ def build(args):
     # 3) thumbnail
     hero = work/cfg["hero"]
     im = Image.open(hero).convert("RGB").resize((900,675))
+    im = imaging.apply_watermark(im)   # OG/card thumb is a published photo → watermark it
     im.save(f"{slug}/thumb.jpg","JPEG",quality=86)
     # 4) gallery + manifest
     subprocess.run([sys.executable, str(HERE/"add_to_gallery.py"), str(work/"config.json")], check=True)

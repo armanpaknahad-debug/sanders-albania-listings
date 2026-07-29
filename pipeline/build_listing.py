@@ -11,23 +11,25 @@ Config schema — see config.example.json. Images referenced in the config are r
 from disk, downscaled, JPEG-compressed and base64-embedded so the page is one file.
 Writes <slug>/index.html (slug from config). plan.html + thumb.jpg are produced by
 the other steps (build_plan.py / onboard.py).
+
+Photography rule: NO marketing text on photos (price banners / sales copy stay off
+the imagery) — but a translucent Sanders logo watermark IS composited onto every
+listing photo at render time (imaging.datauri applies it via apply_watermark). That
+is deliberate brand consistency, an intentional exception, not a violation — do not
+strip it. Village plans and the 3D position view are diagrams, so they pass
+watermark=False. The interactive floor plan is a separate plan.html and is untouched.
 """
 import json, sys, base64, io, os
 from pathlib import Path
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE / "lib"))
+from imaging import datauri, require_watermarking   # shared engine — watermarks photos
 # The mark ships in two tones. The rule, applied everywhere: the white mark only
 # ever sits on the forest-green bands; the dark mark on ivory/light backgrounds.
 LOGO = HERE / "lib" / "logo.png"           # white — for dark green backgrounds
 LOGO_DARK = HERE / "lib" / "logo-dark.png"  # #1C3A2E — for ivory/light backgrounds
-
-def datauri(path, w, q=82):
-    im = Image.open(path).convert("RGB")
-    if im.width > w:
-        im = im.resize((w, int(im.height*w/im.width)), Image.LANCZOS)
-    b = io.BytesIO(); im.save(b, "JPEG", quality=q, optimize=True)
-    return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
 def logo_uri(dark=False):
     """The real Sanders mark. dark=True returns the #1C3A2E variant for light bands."""
@@ -39,9 +41,10 @@ def logo_uri(dark=False):
 def esc(s): return (s or "").replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
 def build(cfg, base):
+    require_watermarking()      # gate: refuse to build unwatermarked photos (needs Pillow)
     slug = cfg["slug"]
-    hero = datauri(base/cfg["hero"], 1700)
-    gal  = [(datauri(base/g[0], 1200), g[1]) for g in cfg.get("gallery", [])]
+    hero = datauri(base/cfg["hero"], 1700)                                    # photo → watermarked
+    gal  = [(datauri(base/g[0], 1200), g[1]) for g in cfg.get("gallery", [])] # photos → watermarked
     spec = cfg.get("spec", [])
     hl   = cfg.get("highlights", [])
     LG_DARK = logo_uri(dark=True)   # nav sits on ivory
@@ -57,8 +60,9 @@ def build(cfg, base):
 
     # Position within the village (brochure "The Position" page): copy + village plan + 3D view
     pos_copy = cfg.get("position_copy", "")
-    vill = datauri(base/cfg["village_img"], 1500) if cfg.get("village_img") else ""
-    p3d  = datauri(base/cfg["pos3d_img"], 1500) if cfg.get("pos3d_img") else ""
+    # village plan + 3D position view are diagrams, not photography → not watermarked
+    vill = datauri(base/cfg["village_img"], 1500, watermark=False) if cfg.get("village_img") else ""
+    p3d  = datauri(base/cfg["pos3d_img"], 1500, watermark=False) if cfg.get("pos3d_img") else ""
     position_html = ""
     if pos_copy and vill and p3d:
         position_html = (
