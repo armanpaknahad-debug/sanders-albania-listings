@@ -35,6 +35,22 @@ def main():
 
     data = json.loads(Path(args.rooms).read_text(encoding="utf-8"))
 
+    # normalise the summary tiles. The viewer renders each total as
+    # `t.value` / `t.label`, so a [label, value] pair (or {k:v}) would print
+    # "undefined". Coerce any shape into {label, value} objects here so the
+    # tiles are always correct regardless of how rooms.json was authored.
+    def _norm_total(t):
+        if isinstance(t, dict):
+            if "label" in t and "value" in t:
+                return {"label": t["label"], "value": t["value"]}
+            k, v = next(iter(t.items()))
+            return {"label": k, "value": v}
+        if isinstance(t, (list, tuple)) and len(t) == 2:
+            return {"label": t[0], "value": t[1]}
+        return {"label": "", "value": str(t)}
+    if data.get("totals"):
+        data["totals"] = [_norm_total(t) for t in data["totals"]]
+
     # minimal validation — fail loud rather than ship a broken plan
     assert data.get("name"), "rooms.json needs a unit 'name'"
     assert data.get("levels"), "rooms.json needs at least one level"

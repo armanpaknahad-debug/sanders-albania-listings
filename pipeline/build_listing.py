@@ -77,22 +77,30 @@ def build(cfg, base):
             "<figcaption>Position in three dimensions</figcaption></figure>"
             "</div></div></section>")
 
-    # development film — Manastiri pattern, placed directly before the gallery.
-    # Config-gated: only units carrying a "video" block get it. 16:9 landscape by
-    # default (aspect overridable), controls/playsinline/preload=none/muted, no
-    # autoplay, no loop.
-    video_html = ""
+    # development film — full-bleed band ABOVE the hero (the first thing a visitor
+    # sees). Element behaviour mirrors the Manastiri Bay video: controls,
+    # playsinline, preload=none, muted, poster; no autoplay, no loop. Config-gated
+    # on a "video" block. (SOL's film is landscape, so it's a full-width topper
+    # rather than Manastiri's mid-page portrait block.)
+    film_top = ""
     v = cfg.get("video")
     if v:
-        ar = v.get("aspect", "16 / 9")
-        video_html = (
-            "<section style='padding-top:0'><div class='wrap'>"
-            f"<p class='eyebrow'>{esc(v.get('eyebrow','Film'))}</p>"
-            f"<h2>{esc(v.get('h2','The development, on film'))}</h2>"
-            f"<p class='lead'>{esc(v.get('lead',''))}</p>"
-            f"<div class='filmwrap' style='aspect-ratio:{ar}'>"
+        film_top = (
+            "<section class='filmtop'>"
             f"<video src='{esc(v['src'])}' poster='{esc(v.get('poster',''))}' "
-            "controls playsinline preload='none' muted></video></div>"
+            "controls playsinline preload='none' muted></video></section>")
+
+    # location map — mirrors the Manastiri .mapwrap; source built from config geo
+    # (top-level "geo" or schema.geo), so every unit with coordinates gets a map.
+    geo = cfg.get("geo") or cfg.get("schema", {}).get("geo")
+    map_html = ""
+    if geo:
+        q = f"{geo[0]},{geo[1]}"
+        map_html = (
+            "<section style='padding-top:0'><div class='wrap'>"
+            f"<div class='mapwrap'><iframe src='https://maps.google.com/maps?q={q}&z=15&output=embed' "
+            "loading='lazy' referrerpolicy='strict-origin-when-cross-origin' "
+            f"title='{esc(cfg['name'])} — location map'></iframe></div>"
             "</div></section>")
 
     # interactive plan section — omitted for units whose plan isn't ready yet
@@ -223,14 +231,18 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 .social a:hover{{border-color:var(--terra);background:rgba(192,98,60,.18)}}
 .social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
 .social a:hover svg{{fill:#fff}}
-.filmwrap{{margin-top:26px;border-radius:10px;overflow:hidden;background:#0d1a14;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
-.filmwrap video{{width:100%;height:100%;object-fit:cover;display:block}}
+.filmtop{{background:#0d1a14;line-height:0;padding:0}}
+.filmtop video{{display:block;width:100%;height:auto;max-height:86vh;margin:0 auto;background:#0d1a14}}
+.mapwrap{{margin-top:26px;border:1px solid rgba(28,58,46,.1);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
+.mapwrap iframe{{display:block;width:100%;height:450px;border:0}}
+@media(max-width:680px){{.mapwrap iframe{{height:340px}}}}
 </style>{jsonld}</head><body>
 <nav><div class="navin">
  <div class="brand"><img src="{LG_DARK}" alt="Sanders">SANDERS</div>
  <div class="navmid">{esc(cfg['name'])} · {esc(cfg.get('development',''))}</div>
  <a class="btn btn-out" href="mailto:sales@sandersalbania.com?subject={esc(cfg['name'])}%20enquiry">Enquire</a>
 </div></nav>
+{film_top}
 <header class="hero" style="background-image:url({hero})"><div class="wrap">
  <p class="eyebrow">{esc(cfg.get('eyebrow',''))}</p>
  <h1>{esc(cfg['name'])}</h1>
@@ -244,7 +256,6 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <p class="lead">{esc(cfg.get('description',''))}</p>
 </div></section>
 {plan_html}
-{video_html}
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 {position_html}
 <section class="loc"><div class="wrap">
@@ -253,6 +264,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  {"<div class='hl'>"+hl_html+"</div>" if hl_html else ""}
  <a class="back" href="/">← The Collection</a>
 </div></section>
+{map_html}
 <footer><div class="wrap"><div class="fgrid">
  <div><img class="flogo" src="{LG}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
  <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>
