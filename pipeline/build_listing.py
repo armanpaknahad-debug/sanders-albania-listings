@@ -111,7 +111,9 @@ def build(cfg, base):
     site = cfg.get("site", "https://listings.sandersalbania.com")
     page_url = f"{site}/{slug}/"
     og_img = f"{site}/{slug}/thumb.jpg"
-    og_title = f"{cfg['name']} — {cfg.get('development','')} · Sanders"
+    # optional title override (e.g. to carry "Penthouse" into the tab + share cards);
+    # falls back to the standard "Name — Development · Sanders".
+    og_title = cfg.get("title") or f"{cfg['name']} — {cfg.get('development','')} · Sanders"
 
     # schema.org structured data (JSON-LD). Apartment (an Accommodation) carrying a
     # RealEstateListing offer. Only fields we actually hold are emitted — nothing
@@ -140,7 +142,7 @@ def build(cfg, base):
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(cfg['name'])} — {esc(cfg.get('development',''))} · Sanders</title>
+<title>{esc(og_title)}</title>
 <meta name="description" content="{esc(cfg.get('sub',''))}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">

@@ -707,6 +707,32 @@
    "status": "available",
    "thumb": "elise/thumb.jpg",
    "href": "elise/"
+  },
+  {
+   "slug": "maelle",
+   "name": "Maëlle",
+   "development": "SOL Residence",
+   "location": "Kalaja, Vlorë, Albania",
+   "price": "€ 375,000",
+   "beds": 2,
+   "area": "96.6 m²",
+   "tag": "2+1 sea-view residence",
+   "status": "available",
+   "thumb": "maelle/thumb.jpg",
+   "href": "maelle/"
+  },
+  {
+   "slug": "adelaide",
+   "name": "Adélaïde",
+   "development": "SOL Residence",
+   "location": "Kalaja, Vlorë, Albania",
+   "price": "€ 775,000",
+   "beds": 2,
+   "area": "115.4 m²",
+   "tag": "Penthouse · 2+1",
+   "status": "available",
+   "thumb": "adelaide/thumb.jpg",
+   "href": "adelaide/"
   }
  ]
 }
