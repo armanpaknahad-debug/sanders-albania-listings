@@ -85,10 +85,28 @@ def build(cfg, base):
     film_top = ""
     v = cfg.get("video")
     if v:
+        # Unit pages live one level deep (<slug>/index.html), so a leading-slash
+        # asset path is rewritten page-relative ("/assets/..." -> "../assets/...").
+        # That resolves both on the deployed site AND when the file is opened
+        # directly (file://) — the root-absolute form only worked once deployed.
+        def _rel(p):
+            return (".." + p) if p.startswith("/") else p
+        vsrc = _rel(v["src"]); vpos = _rel(v.get("poster", ""))
+        # The band reserves a 16/9 box (see .filmwrap) so there is no collapse and
+        # no layout shift before the media loads; the poster fills it immediately.
+        # A Cypress-styled play button replaces raw browser chrome and hands off to
+        # native controls once playing. No autoplay, no loop.
         film_top = (
-            "<section class='filmtop'>"
-            f"<video src='{esc(v['src'])}' poster='{esc(v.get('poster',''))}' "
-            "controls playsinline preload='none' muted></video></section>")
+            "<section class='filmtop'><div class='filmwrap'>"
+            f"<video src='{esc(vsrc)}' poster='{esc(vpos)}' playsinline preload='none' muted></video>"
+            "<button class='filmplay' type='button' aria-label='Play film'>"
+            "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M8 5v14l11-7z'/></svg></button>"
+            "</div>"
+            "<script>(function(){var s=document.currentScript,w=s.parentNode.querySelector('.filmwrap'),"
+            "v=w.querySelector('video'),b=w.querySelector('.filmplay');"
+            "b.addEventListener('click',function(){v.controls=true;v.play();b.style.display='none';});"
+            "v.addEventListener('play',function(){b.style.display='none';});})();</script>"
+            "</section>")
 
     # location map — mirrors the Manastiri .mapwrap; source built from config geo
     # (top-level "geo" or schema.geo), so every unit with coordinates gets a map.
@@ -232,7 +250,11 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 .social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
 .social a:hover svg{{fill:#fff}}
 .filmtop{{background:#0d1a14;line-height:0;padding:0}}
-.filmtop video{{display:block;width:100%;height:auto;max-height:86vh;margin:0 auto;background:#0d1a14}}
+.filmtop .filmwrap{{position:relative;width:100%;aspect-ratio:16/9;max-height:82vh;overflow:hidden;margin:0 auto}}
+.filmtop video{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0d1a14}}
+.filmplay{{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;border:1.5px solid rgba(244,240,230,.85);background:rgba(28,58,46,.42);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;padding:0}}
+.filmplay:hover{{background:rgba(192,98,60,.92);border-color:var(--terra)}}
+.filmplay svg{{width:26px;height:26px;fill:var(--ivory);margin-left:4px}}
 .mapwrap{{margin-top:26px;border:1px solid rgba(28,58,46,.1);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
 .mapwrap iframe{{display:block;width:100%;height:450px;border:0}}
 @media(max-width:680px){{.mapwrap iframe{{height:340px}}}}
