@@ -97,7 +97,7 @@ def build(cfg, base):
             return (".." + p) if p.startswith("/") else p
         vsrc = _rel(v["src"]); vpos = _rel(v.get("poster", ""))
         video_html = (
-            "<section style='padding-top:0'><div class='wrap'><div class='vidrow'>"
+            "<section><div class='wrap'><div class='vidrow'>"
             f"<div class='vidwrap'><video src='{esc(vsrc)}' poster='{esc(vpos)}' "
             "controls playsinline preload='none' muted></video></div>"
             "<div class='vidcopy'>"
@@ -269,12 +269,12 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <a class="btn btn-terra" href="mailto:sales@sandersalbania.com?subject={esc(cfg['name'])}%20viewing">Book a viewing</a></div>
 </header>
 <div class="specbar"><div class="specgrid">{spec_html}</div></div>
-<section><div class="wrap">
+{video_html}
+<section{" style='padding-top:0'" if video_html else ""}><div class="wrap">
  <p class="eyebrow">The residence</p><h2>{esc(cfg['name'])}</h2>
  <p class="lead">{esc(cfg.get('description',''))}</p>
 </div></section>
 {plan_html}
-{video_html}
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 {position_html}
 <section class="loc"><div class="wrap">
