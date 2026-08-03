@@ -77,6 +77,24 @@ def build(cfg, base):
             "<figcaption>Position in three dimensions</figcaption></figure>"
             "</div></div></section>")
 
+    # development film — Manastiri pattern, placed directly before the gallery.
+    # Config-gated: only units carrying a "video" block get it. 16:9 landscape by
+    # default (aspect overridable), controls/playsinline/preload=none/muted, no
+    # autoplay, no loop.
+    video_html = ""
+    v = cfg.get("video")
+    if v:
+        ar = v.get("aspect", "16 / 9")
+        video_html = (
+            "<section style='padding-top:0'><div class='wrap'>"
+            f"<p class='eyebrow'>{esc(v.get('eyebrow','Film'))}</p>"
+            f"<h2>{esc(v.get('h2','The development, on film'))}</h2>"
+            f"<p class='lead'>{esc(v.get('lead',''))}</p>"
+            f"<div class='filmwrap' style='aspect-ratio:{ar}'>"
+            f"<video src='{esc(v['src'])}' poster='{esc(v.get('poster',''))}' "
+            "controls playsinline preload='none' muted></video></div>"
+            "</div></section>")
+
     # interactive plan section — omitted for units whose plan isn't ready yet
     plan_html = ""
     if cfg.get("has_plan", True):
@@ -94,6 +112,30 @@ def build(cfg, base):
     page_url = f"{site}/{slug}/"
     og_img = f"{site}/{slug}/thumb.jpg"
     og_title = f"{cfg['name']} — {cfg.get('development','')} · Sanders"
+
+    # schema.org structured data (JSON-LD). Apartment (an Accommodation) carrying a
+    # RealEstateListing offer. Only fields we actually hold are emitted — nothing
+    # fabricated. Driven by the optional cfg["schema"] block.
+    import json as _json
+    sc = cfg.get("schema", {})
+    node = {"@context": "https://schema.org", "@type": "Apartment",
+            "name": f"{cfg['name']} — {cfg.get('development','')}",
+            "description": cfg.get("sub", ""), "url": page_url, "image": og_img}
+    if sc.get("beds") is not None: node["numberOfBedrooms"] = sc["beds"]
+    if sc.get("floor_m2"):
+        node["floorSize"] = {"@type": "QuantitativeValue", "value": sc["floor_m2"], "unitCode": "MTK"}
+    if sc.get("locality") or sc.get("country"):
+        node["address"] = {"@type": "PostalAddress",
+                            "addressLocality": sc.get("locality", ""),
+                            "addressRegion": sc.get("region", ""),
+                            "addressCountry": sc.get("country", "")}
+    if sc.get("geo"):
+        node["geo"] = {"@type": "GeoCoordinates", "latitude": sc["geo"][0], "longitude": sc["geo"][1]}
+    if sc.get("price_eur"):
+        node["offers"] = {"@type": "Offer", "price": sc["price_eur"], "priceCurrency": "EUR",
+                          "availability": "https://schema.org/InStock", "url": page_url}
+    jsonld = ('<script type="application/ld+json">'
+              + _json.dumps(node, ensure_ascii=False) + '</script>')
 
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -179,7 +221,9 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 .social a:hover{{border-color:var(--terra);background:rgba(192,98,60,.18)}}
 .social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
 .social a:hover svg{{fill:#fff}}
-</style></head><body>
+.filmwrap{{margin-top:26px;border-radius:10px;overflow:hidden;background:#0d1a14;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
+.filmwrap video{{width:100%;height:100%;object-fit:cover;display:block}}
+</style>{jsonld}</head><body>
 <nav><div class="navin">
  <div class="brand"><img src="{LG_DARK}" alt="Sanders">SANDERS</div>
  <div class="navmid">{esc(cfg['name'])} · {esc(cfg.get('development',''))}</div>
@@ -198,6 +242,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <p class="lead">{esc(cfg.get('description',''))}</p>
 </div></section>
 {plan_html}
+{video_html}
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 {position_html}
 <section class="loc"><div class="wrap">

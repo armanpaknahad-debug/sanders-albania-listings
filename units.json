@@ -694,6 +694,19 @@
    "status": "available",
    "thumb": "penelope/thumb.jpg",
    "href": "penelope/"
+  },
+  {
+   "slug": "elise",
+   "name": "Élise",
+   "development": "SOL Residence",
+   "location": "Kalaja, Vlorë, Albania",
+   "price": "€ 375,000",
+   "beds": 2,
+   "area": "96.6 m²",
+   "tag": "2+1 sea-view residence",
+   "status": "available",
+   "thumb": "elise/thumb.jpg",
+   "href": "elise/"
   }
  ]
 }
