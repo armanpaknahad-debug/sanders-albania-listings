@@ -82,31 +82,29 @@ def build(cfg, base):
     # playsinline, preload=none, muted, poster; no autoplay, no loop. Config-gated
     # on a "video" block. (SOL's film is landscape, so it's a full-width topper
     # rather than Manastiri's mid-page portrait block.)
-    film_top = ""
+    # development film — placed directly before the gallery, mirroring where
+    # Manastiri Bay puts it (below the key info, description and detail rows).
+    # Manastiri's .vidrow treatment: video + copy side by side, native controls,
+    # playsinline, preload=none, muted, poster; no autoplay, no loop. The .vidwrap
+    # reserves a 16/9 box (SOL's film is landscape) so there's no collapse and no
+    # layout shift. Unit pages are one level deep, so a leading-slash asset path is
+    # rewritten page-relative ("/assets/..." -> "../assets/...") to resolve both
+    # deployed and when the file is opened directly.
+    video_html = ""
     v = cfg.get("video")
     if v:
-        # Unit pages live one level deep (<slug>/index.html), so a leading-slash
-        # asset path is rewritten page-relative ("/assets/..." -> "../assets/...").
-        # That resolves both on the deployed site AND when the file is opened
-        # directly (file://) — the root-absolute form only worked once deployed.
         def _rel(p):
             return (".." + p) if p.startswith("/") else p
         vsrc = _rel(v["src"]); vpos = _rel(v.get("poster", ""))
-        # The band reserves a 16/9 box (see .filmwrap) so there is no collapse and
-        # no layout shift before the media loads; the poster fills it immediately.
-        # A Cypress-styled play button replaces raw browser chrome and hands off to
-        # native controls once playing. No autoplay, no loop.
-        film_top = (
-            "<section class='filmtop'><div class='filmwrap'>"
-            f"<video src='{esc(vsrc)}' poster='{esc(vpos)}' playsinline preload='none' muted></video>"
-            "<button class='filmplay' type='button' aria-label='Play film'>"
-            "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M8 5v14l11-7z'/></svg></button>"
-            "</div>"
-            "<script>(function(){var s=document.currentScript,w=s.parentNode.querySelector('.filmwrap'),"
-            "v=w.querySelector('video'),b=w.querySelector('.filmplay');"
-            "b.addEventListener('click',function(){v.controls=true;v.play();b.style.display='none';});"
-            "v.addEventListener('play',function(){b.style.display='none';});})();</script>"
-            "</section>")
+        video_html = (
+            "<section style='padding-top:0'><div class='wrap'><div class='vidrow'>"
+            f"<div class='vidwrap'><video src='{esc(vsrc)}' poster='{esc(vpos)}' "
+            "controls playsinline preload='none' muted></video></div>"
+            "<div class='vidcopy'>"
+            f"<p class='eyebrow'>{esc(v.get('eyebrow','The development on film'))}</p>"
+            f"<h2>{esc(v.get('h2','SOL Residence, in motion'))}</h2>"
+            f"<p class='lead'>{esc(v.get('lead',''))}</p>"
+            "</div></div></div></section>")
 
     # location map — mirrors the Manastiri .mapwrap; source built from config geo
     # (top-level "geo" or schema.geo), so every unit with coordinates gets a map.
@@ -249,12 +247,11 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
 .social a:hover{{border-color:var(--terra);background:rgba(192,98,60,.18)}}
 .social svg{{width:17px;height:17px;fill:rgba(244,240,230,.86)}}
 .social a:hover svg{{fill:#fff}}
-.filmtop{{background:#0d1a14;line-height:0;padding:0}}
-.filmtop .filmwrap{{position:relative;width:100%;aspect-ratio:16/9;max-height:82vh;overflow:hidden;margin:0 auto}}
-.filmtop video{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0d1a14}}
-.filmplay{{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;border:1.5px solid rgba(244,240,230,.85);background:rgba(28,58,46,.42);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;padding:0}}
-.filmplay:hover{{background:rgba(192,98,60,.92);border-color:var(--terra)}}
-.filmplay svg{{width:26px;height:26px;fill:var(--ivory);margin-left:4px}}
+.vidrow{{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:center}}
+@media(max-width:720px){{.vidrow{{grid-template-columns:1fr;gap:24px}}}}
+.vidwrap{{position:relative;aspect-ratio:16/9;width:100%;border-radius:10px;overflow:hidden;background:#0d1a14;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
+.vidwrap video{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}}
+.vidcopy .eyebrow{{margin:0 0 12px}}.vidcopy h2{{margin:0 0 12px}}.vidcopy .lead{{margin:0}}
 .mapwrap{{margin-top:26px;border:1px solid rgba(28,58,46,.1);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 12px 38px rgba(28,58,46,.09)}}
 .mapwrap iframe{{display:block;width:100%;height:450px;border:0}}
 @media(max-width:680px){{.mapwrap iframe{{height:340px}}}}
@@ -264,7 +261,6 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <div class="navmid">{esc(cfg['name'])} · {esc(cfg.get('development',''))}</div>
  <a class="btn btn-out" href="mailto:sales@sandersalbania.com?subject={esc(cfg['name'])}%20enquiry">Enquire</a>
 </div></nav>
-{film_top}
 <header class="hero" style="background-image:url({hero})"><div class="wrap">
  <p class="eyebrow">{esc(cfg.get('eyebrow',''))}</p>
  <h1>{esc(cfg['name'])}</h1>
@@ -278,6 +274,7 @@ footer a{{color:rgba(244,240,230,.82);text-decoration:none}}footer a:hover{{colo
  <p class="lead">{esc(cfg.get('description',''))}</p>
 </div></section>
 {plan_html}
+{video_html}
 {"<section style='padding-top:0'><div class='wrap'><div class='gal'>"+gal_html+"</div></div></section>" if gal_html else ""}
 {position_html}
 <section class="loc"><div class="wrap">

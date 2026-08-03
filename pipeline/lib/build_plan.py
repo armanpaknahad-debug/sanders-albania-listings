@@ -62,6 +62,93 @@ def main():
             assert r.get("name") and r.get("points"), \
                 f"room missing name/points: {r}"
 
+    # ---- label placement + fit (image-mode plans) -------------------------
+    # Two problems the viewer's naive approach caused: a single fixed font size
+    # for every room (labels overflow small rooms and collide), and a vertex-
+    # average "centroid" (wrong for L-shapes — the Hall label lands off-centre or
+    # outside). Compute both correctly here, per room, and bake them into the data.
+    def _pts(s):
+        return [tuple(map(float, p.split(","))) for p in s.split()]
+
+    def _bbox(p):
+        xs = [x for x, _ in p]; ys = [y for _, y in p]
+        return min(xs), min(ys), max(xs), max(ys)
+
+    def _area_centroid(p):
+        A = cx = cy = 0.0
+        for i in range(len(p)):
+            x0, y0 = p[i]; x1, y1 = p[(i + 1) % len(p)]
+            cr = x0 * y1 - x1 * y0
+            A += cr; cx += (x0 + x1) * cr; cy += (y0 + y1) * cr
+        if abs(A) < 1e-6:
+            x0, y0, x1, y1 = _bbox(p); return ((x0 + x1) / 2, (y0 + y1) / 2)
+        A *= 0.5
+        return (cx / (6 * A), cy / (6 * A))
+
+    def _inside(pt, p):
+        x, y = pt; c = False; n = len(p); j = n - 1
+        for i in range(n):
+            xi, yi = p[i]; xj, yj = p[j]
+            if ((yi > y) != (yj > y)) and (x < (xj - xi) * (y - yi) / (yj - yi + 1e-12) + xi):
+                c = not c
+            j = i
+        return c
+
+    def _place(p):
+        """Area centroid if it falls inside; else the inside grid point nearest it;
+        else the bbox centre."""
+        ac = _area_centroid(p)
+        if _inside(ac, p):
+            return ac
+        x0, y0, x1, y1 = _bbox(p)
+        best = None; bd = 1e18
+        for gy in range(1, 20):
+            for gx in range(1, 20):
+                q = (x0 + (x1 - x0) * gx / 20, y0 + (y1 - y0) * gy / 20)
+                if _inside(q, p):
+                    d = (q[0] - ac[0]) ** 2 + (q[1] - ac[1]) ** 2
+                    if d < bd:
+                        bd = d; best = q
+        return best or ((x0 + x1) / 2, (y0 + y1) / 2)
+
+    def _wrap(words, n):
+        """Split words into n balanced lines by character length."""
+        if n <= 1:
+            return [" ".join(words)]
+        total = sum(len(w) for w in words) + len(words) - 1
+        target = total / n; lines = [[]]; cur = 0
+        for w in words:
+            if lines and cur > 0 and cur + 1 + len(w) > target and len(lines) < n:
+                lines.append([]); cur = 0
+            lines[-1].append(w); cur += len(w) + 1
+        return [" ".join(l) for l in lines if l]
+
+    CW, LH = 0.56, 1.16          # DM Sans avg glyph width (em); line height
+    for lvl in data.get("levels", []):
+        vbw = float(str(lvl.get("viewbox", "0 0 1000 1000")).split()[2] or 1000)
+        MAXF, MINF = vbw * 0.030, vbw * 0.013
+        for r in lvl.get("rooms", []):
+            p = _pts(r["points"])
+            r["labelAt"] = [round(v, 1) for v in _place(p)]
+            bx0, by0, bx1, by1 = _bbox(p)
+            aw, ah = (bx1 - bx0) * 0.85, (by1 - by0) * 0.62
+            text = (r.get("label") or r["name"]).replace("\n", " ")
+            words = text.split()
+            best = None                      # (font, lines)
+            for n in (1, 2, 3):
+                lines = _wrap(words, n)
+                longest = max(len(l) for l in lines)
+                fw = aw / (longest * CW) if longest else MAXF
+                fh = ah / (len(lines) * LH)
+                f = min(fw, fh, MAXF)
+                if best is None or f > best[0]:
+                    best = (f, lines)
+            if best[0] >= MINF:
+                r["fontSize"] = int(round(best[0]))
+                r["label"] = "\n".join(best[1])
+            else:
+                r["dropLabel"] = True        # too small to be legible → hotspot only
+
     tpl = TEMPLATE.read_text(encoding="utf-8")
 
     # 1) swap the whole sample UNIT = {...}; block for real data.

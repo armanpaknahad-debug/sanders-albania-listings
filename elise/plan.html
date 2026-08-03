@@ -165,39 +165,85 @@ const UNIT = {
       "rooms": [
         {
           "name": "Bedroom 1",
-          "points": "425,20 690,20 690,430 425,430"
+          "points": "425,20 690,20 690,430 425,430",
+          "labelAt": [
+            557.5,
+            225.0
+          ],
+          "fontSize": 53,
+          "label": "Bedroom\n1"
         },
         {
           "name": "Bedroom 2",
-          "points": "700,20 945,20 945,430 700,430"
+          "points": "700,20 945,20 945,430 700,430",
+          "labelAt": [
+            822.5,
+            225.0
+          ],
+          "fontSize": 53,
+          "label": "Bedroom\n2"
         },
         {
           "name": "Bathroom 1",
-          "points": "425,435 600,435 600,635 425,635"
+          "points": "425,435 600,435 600,635 425,635",
+          "labelAt": [
+            512.5,
+            535.0
+          ],
+          "fontSize": 33,
+          "label": "Bathroom\n1"
         },
         {
-          "name": "Shower Room",
-          "points": "775,435 950,435 950,625 775,625"
+          "name": "Bathroom 2",
+          "points": "775,435 950,435 950,625 775,625",
+          "labelAt": [
+            862.5,
+            530.0
+          ],
+          "fontSize": 33,
+          "label": "Bathroom\n2"
         },
         {
           "name": "Living · Dining · Kitchen",
-          "label": "Living · Dining\n· Kitchen",
-          "points": "425,645 745,645 745,1290 425,1290"
+          "label": "Living ·\nDining · Kitchen",
+          "points": "425,645 745,645 745,1290 425,1290",
+          "labelAt": [
+            585.0,
+            967.5
+          ],
+          "fontSize": 30
         },
         {
           "name": "Hall",
-          "points": "605,635 1045,635 1045,795 745,795 745,635"
+          "points": "605,635 1045,635 1045,795 745,795 745,635",
+          "labelAt": [
+            895.0,
+            715.0
+          ],
+          "fontSize": 53,
+          "label": "Hall"
         },
         {
           "name": "Balcony",
           "points": "430,1292 745,1292 745,1408 430,1408",
-          "outdoor": true
+          "outdoor": true,
+          "labelAt": [
+            587.5,
+            1350.0
+          ],
+          "fontSize": 53,
+          "label": "Balcony"
         },
         {
           "name": "Common stair & lift",
           "area": "10.5 m²",
-          "label": "Common\nstair & lift",
-          "points": "1045,20 1212,20 1212,640 1045,640"
+          "label": "Common\nstair\n& lift",
+          "points": "1045,20 1212,20 1212,640 1045,640",
+          "labelAt": [
+            1128.5,
+            330.0
+          ],
+          "fontSize": 42
         }
       ]
     }
@@ -250,16 +296,18 @@ function renderLevel(i){
     var vbw=parseFloat(lvl.viewbox.split(/\s+/)[2])||1000;
     var fs=Math.round(vbw*0.030);
     lvl.rooms.forEach(function(room){
+      if(room.dropLabel) return;                 // too small to print legibly — hotspot only
       var c=room.labelAt || centroid(room.points);
+      var rfs=room.fontSize||fs;                  // per-room fitted size (build_plan.py)
       var lines=(room.label||room.name).split("\n");
       var t=document.createElementNS(SVGNS,"text");
       t.setAttribute("x",c[0]); t.setAttribute("y",c[1]);
       t.setAttribute("class","imglabel"+(room.outdoor?" outdoor":""));
-      t.setAttribute("font-size",fs);
-      var y0=c[1]-(lines.length-1)*fs*0.6;
+      t.setAttribute("font-size",rfs);
+      var y0=c[1]-(lines.length-1)*rfs*0.6;
       lines.forEach(function(ln,li){
         var ts=document.createElementNS(SVGNS,"tspan");
-        ts.setAttribute("x",c[0]); ts.setAttribute("y",y0+li*fs*1.2);
+        ts.setAttribute("x",c[0]); ts.setAttribute("y",y0+li*rfs*1.2);
         ts.textContent=ln; t.appendChild(ts);
       });
       ov.appendChild(t);

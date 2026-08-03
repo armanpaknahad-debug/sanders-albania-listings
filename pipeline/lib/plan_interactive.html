@@ -220,16 +220,18 @@ function renderLevel(i){
     var vbw=parseFloat(lvl.viewbox.split(/\s+/)[2])||1000;
     var fs=Math.round(vbw*0.030);
     lvl.rooms.forEach(function(room){
+      if(room.dropLabel) return;                 // too small to print legibly — hotspot only
       var c=room.labelAt || centroid(room.points);
+      var rfs=room.fontSize||fs;                  // per-room fitted size (build_plan.py)
       var lines=(room.label||room.name).split("\n");
       var t=document.createElementNS(SVGNS,"text");
       t.setAttribute("x",c[0]); t.setAttribute("y",c[1]);
       t.setAttribute("class","imglabel"+(room.outdoor?" outdoor":""));
-      t.setAttribute("font-size",fs);
-      var y0=c[1]-(lines.length-1)*fs*0.6;
+      t.setAttribute("font-size",rfs);
+      var y0=c[1]-(lines.length-1)*rfs*0.6;
       lines.forEach(function(ln,li){
         var ts=document.createElementNS(SVGNS,"tspan");
-        ts.setAttribute("x",c[0]); ts.setAttribute("y",y0+li*fs*1.2);
+        ts.setAttribute("x",c[0]); ts.setAttribute("y",y0+li*rfs*1.2);
         ts.textContent=ln; t.appendChild(ts);
       });
       ov.appendChild(t);
