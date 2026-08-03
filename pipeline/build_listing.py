@@ -148,6 +148,7 @@ def build(cfg, base):
             "name": f"{cfg['name']} — {cfg.get('development','')}",
             "description": cfg.get("sub", ""), "url": page_url, "image": og_img}
     if sc.get("beds") is not None: node["numberOfBedrooms"] = sc["beds"]
+    if sc.get("baths") is not None: node["numberOfBathroomsTotal"] = sc["baths"]
     if sc.get("floor_m2"):
         node["floorSize"] = {"@type": "QuantitativeValue", "value": sc["floor_m2"], "unitCode": "MTK"}
     if sc.get("locality") or sc.get("country"):

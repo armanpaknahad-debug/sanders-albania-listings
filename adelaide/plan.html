@@ -57,6 +57,7 @@
   .hot:hover{ fill:rgba(192,98,60,.16); }
   .hot.sel{ fill:rgba(192,98,60,.24); stroke:var(--terra); stroke-width:3; }
   .hot.outdoor:hover{ fill:rgba(201,169,97,.16); }
+  .hot.util:hover{ fill:rgba(106,110,100,.16); }
   .hot.outdoor.sel{ fill:rgba(201,169,97,.28); stroke:var(--gold); stroke-width:2.5; }
   /* room-name labels drawn on top of the real drawing (image mode). An ivory
      halo (paint-order:stroke) keeps them legible over furniture and floor tone. */
@@ -65,6 +66,7 @@
     paint-order:stroke; stroke:rgba(250,247,239,.94); stroke-width:7px;
     stroke-linejoin:round; text-transform:uppercase; }
   .imglabel.outdoor{ fill:#8a6a2c; }
+  .imglabel.util{ fill:#6a6e64; font-style:italic; }   /* service/utility spaces */
 
   .room{ fill:rgba(28,58,46,.045); stroke:var(--line); stroke-width:2.4;
     stroke-linejoin:round; cursor:pointer; transition:fill .16s ease; }
@@ -194,13 +196,15 @@ const UNIT = {
           "label": "Bathroom 1"
         },
         {
-          "name": "Bathroom 2",
+          "name": "Laundry",
           "points": "1025,358 1178,358 1178,435 1025,435",
+          "util": true,
           "labelAt": [
             1101.5,
             396.5
           ],
-          "dropLabel": true
+          "fontSize": 33,
+          "label": "Laundry"
         },
         {
           "name": "Ensuite",
@@ -272,7 +276,7 @@ function showDetail(room){
 function makeHot(room, cls){
   const poly=document.createElementNS(SVGNS,"polygon");
   poly.setAttribute("points", room.points);
-  poly.setAttribute("class", cls+(room.outdoor?" outdoor":""));
+  poly.setAttribute("class", cls+(room.outdoor?" outdoor":room.util?" util":""));
   poly.setAttribute("tabindex","0");
   poly.setAttribute("role","button");
   poly.setAttribute("aria-label", room.area ? room.name+", "+room.area : room.name);
@@ -302,7 +306,7 @@ function renderLevel(i){
       var lines=(room.label||room.name).split("\n");
       var t=document.createElementNS(SVGNS,"text");
       t.setAttribute("x",c[0]); t.setAttribute("y",c[1]);
-      t.setAttribute("class","imglabel"+(room.outdoor?" outdoor":""));
+      t.setAttribute("class","imglabel"+(room.outdoor?" outdoor":room.util?" util":""));
       t.setAttribute("font-size",rfs);
       var y0=c[1]-(lines.length-1)*rfs*0.6;
       lines.forEach(function(ln,li){
