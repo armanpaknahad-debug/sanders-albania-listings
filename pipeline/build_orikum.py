@@ -185,6 +185,43 @@ def svg_uri(svg):
     return "data:image/svg+xml;base64," + base64.b64encode(svg.encode("utf-8")).decode()
 
 
+def assert_insets_marked(page, tol=12):
+    """Build gate: prove the unit marker survived INTO THE SHIPPED PAGE.
+
+    Reads the written index.html back, pulls each inset out of its data: URI,
+    base64-decodes the SVG, then decodes the masked <image> payload inside it and
+    checks the pixels are actually TERRA. Nothing here trusts an intermediate —
+    the input is the file on disk that will be deployed.
+
+    Grepping the page for the hex is NOT equivalent and gives a false pass either
+    way: the marker colour lives in PNG pixel data, never as markup, while the
+    theme CSS elsewhere on the page does contain accent hexes. That mismatch is
+    exactly how a silently-unrecoloured raster could look fine to a text search.
+    """
+    want = tuple(int(TERRA[i:i + 2], 16) for i in (1, 3, 5))
+    html_txt = Path(page).read_text(encoding="utf-8")
+    block = re.search(r'<div class="posimgs">(.*?)</div>', html_txt, re.S)
+    if not block:
+        return                                    # unit legitimately has no insets
+    uris = re.findall(r'src="data:image/svg\+xml;base64,([^"]+)"', block.group(1))
+    if not uris:
+        raise SystemExit(f"{page}: posimgs block present but carries no inset SVG")
+    for i, u in enumerate(uris):
+        svg = base64.b64decode(u).decode("utf-8")
+        tags = re.findall(r'<image\b[^>]*\bmask="url\(#[^)]+\)"[^>]*/>', svg)
+        if not tags:
+            raise SystemExit(f"{page}: inset {i} has no masked marker image")
+        for tag in tags:
+            href = re.search(r'href="data:image/\w+;base64,([^"]+)"', tag).group(1)
+            im = Image.open(io.BytesIO(base64.b64decode(href))).convert("RGB")
+            px = list(im.getdata())
+            mean = tuple(sum(p[c] for p in px) // len(px) for c in range(3))
+            if max(abs(a - b) for a, b in zip(mean, want)) > tol:
+                raise SystemExit(
+                    f"{page}: inset {i} marker is {mean}, expected ~{want} ({TERRA}). "
+                    "The raster recolour did not reach the shipped page.")
+
+
 # ------------------------------------------------------------------- fragments
 def specbar(sheet, cfg):
     tiles = [("Type", cfg.get("type_label") or sheet["type"]),
@@ -441,6 +478,7 @@ def build(cfg_path):
 </div><p class="disc">Particulars prepared by Sanders International for guidance only and do not form part of any contract. Marina Orikum is an off-plan development; all imagery is computer-generated. Areas are taken from the developer's plan sheet and are measured externally and to the centreline of party and stair walls. Rates are indicative, quoted per m² by the developer, and subject to change; no unit total is published.</p></div></footer>
 </body></html>"""
     (out / "index.html").write_text(doc, encoding="utf-8")
+    assert_insets_marked(out / "index.html")
 
     # OG/card thumbnail — watermarked like every other published photo
     imaging._ffmpeg_render(PHOTOS / cfg["hero"], out / "thumb.jpg", 900, 84, True,
