@@ -13,9 +13,8 @@ and the €3,200–3,600 band. It never publishes a unit total. There is no code
 path here that multiplies rate by area, and the JSON-LD omits `offers` entirely
 rather than inventing a figure. See orikum.RATE_ONLY.
 """
-import base64, html, io, json, re, sys
+import base64, html, json, re, sys
 from pathlib import Path
-from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "lib"))
@@ -74,179 +73,8 @@ def plan_svg(sheet, crop_pad=12):
     return svg, vb
 
 
-def inset_svgs(sheet):
-    """The developer's two position insets — building-in-the-masterplan and
-    apartment-on-the-floor-plate — cropped out of the sales band whole.
-
-    Cropped, not reassembled: the insets carry a tinted fill marking WHICH
-    building and WHICH apartment, and that highlight is the entire point of the
-    figure. Lifting the linework out element by element loses it. So we take the
-    region as drawn, band colour and all, and simply leave behind the render, the
-    sales-album header and the developer's logo lockup.
-    """
-    # no text in the insets: the sheet's own captions are Albanian, set white on
-    # the band at 6pt, and this figure carries its own English captions instead.
-    p = PlanSVG(sheet, text_filter=lambda *a: None).parse()
-    band = [it for it in p.items
-            if it.kind == "path" and 'fill="none"' not in it.svg
-            and (it.bbox[2] - it.bbox[0]) * (it.bbox[3] - it.bbox[1]) > p.W * p.H * 0.06
-            and it.bbox[2] > p.W - 8]
-    if not band:
-        return []
-    bx0 = min(b.bbox[0] for b in band)
-    inner = [it for it in p.items
-             if it.bbox[0] > bx0 + 2 and it.kind in ("path", "text")
-             and it.bbox[1] > p.H * 0.28 and it.bbox[3] < p.H * 0.88
-             and (it.bbox[2] - it.bbox[0]) * (it.bbox[3] - it.bbox[1]) < p.W * p.H * 0.06]
-    if not inner:
-        return []
-    # split the two insets at the largest vertical gap between them
-    ys = sorted(inner, key=lambda it: it.bbox[1])
-    gap_at, gap = None, 0
-    reach = ys[0].bbox[3]
-    for it in ys[1:]:
-        if it.bbox[1] - reach > gap:
-            gap, gap_at = it.bbox[1] - reach, (reach + it.bbox[1]) / 2
-        reach = max(reach, it.bbox[3])
-    groups = ([[it for it in inner if it.bbox[3] <= gap_at],
-               [it for it in inner if it.bbox[3] > gap_at]] if gap > 12 else [inner])
-    out = []
-    for g in groups:
-        if not g:
-            continue
-        crop = (min(b.bbox[0] for b in g), min(b.bbox[1] for b in g),
-                max(b.bbox[2] for b in g), max(b.bbox[3] for b in g))
-        out.append(terracotta_highlight(p.svg(crop=crop, pad=10, background=None)))
-    return out
-
-
-# Deep burnt terracotta for the unit marker. NOT the brand accent #C0623C: that
-# sits at only 1.18:1 luminance against the sales-band green, so it separates by
-# hue alone — and terracotta-on-green is the red-green confusion axis, leaving a
-# colour-blind buyer to find their apartment by the white outline alone. This
-# darker tone clears 3:1 on luminance while still reading as terracotta, so the
-# marker survives any colour vision.
-TERRA = "#582C1A"
-
-
-def _png_uri(im):
-    buf = io.BytesIO()
-    im.save(buf, format="PNG", optimize=True)
-    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
-
-
-def _decode(uri):
-    return Image.open(io.BytesIO(base64.b64decode(uri.split(",", 1)[1])))
-
-
-def terracotta_highlight(svg):
-    """Recolour the developer's unit marker to the terracotta accent.
-
-    The sheet marks WHICH building / WHICH apartment with a raster <image> — a
-    flat tint cut to the exact shape of the unit — shown through a <mask>. The
-    extraction carries both across correctly; the marker is NOT being dropped.
-    Two things make it unreadable on the page:
-
-      1. the tint is a muted mauve, close in luminance to the sales-band green;
-      2. the mask is mid-grey, so it renders at roughly HALF opacity, blending
-         the tint another 50% toward the band.
-
-    Measured, that lands at ~1.4:1 against the band — invisible at page size.
-
-    So: recolour the tint raster to terracotta, and normalise the mask to full
-    white so the marker is opaque. Only pixels change — the <image>, its matrix
-    and the mask geometry are untouched, so the shape stays exactly as drawn and
-    nothing about how it renders changes. Normalising by the mask's own maximum
-    keeps the antialiased edge ramp intact rather than hard-thresholding it.
-    """
-    rgb = tuple(int(TERRA[i:i + 2], 16) for i in (1, 3, 5))
-
-    def mask_repl(m):
-        im = _decode(re.search(r'href="([^"]+)"', m.group(0)).group(1)).convert("L")
-        top = max(im.getdata()) or 255
-        im = im.point(lambda v: min(255, int(v * 255 / top)))
-        return m.group(0).replace(re.search(r'href="([^"]+)"', m.group(0)).group(1),
-                                  _png_uri(im))
-
-    def tint_repl(m):
-        im = _decode(re.search(r'href="([^"]+)"', m.group(0)).group(1)).convert("RGB")
-        flat = Image.new("RGB", im.size, rgb)
-        return m.group(0).replace(re.search(r'href="([^"]+)"', m.group(0)).group(1),
-                                  _png_uri(flat))
-
-    # the mask's own <image> lives inside <defs>; the tint is the one carrying
-    # the mask="url(#…)" reference. Order matters: rewrite defs first.
-    svg = re.sub(r'<image\b(?![^>]*\bmask=)[^>]*/>', mask_repl, svg, count=0) \
-        if "<mask" in svg else svg
-    return re.sub(r'<image\b[^>]*\bmask="url\(#[^)]+\)"[^>]*/>', tint_repl, svg)
-
-
 def svg_uri(svg):
     return "data:image/svg+xml;base64," + base64.b64encode(svg.encode("utf-8")).decode()
-
-
-def inset_png_uri(svg, target_w=900):
-    """Rasterise a position inset to a flat PNG at build time.
-
-    The insets used to ship as SVG-in-<img>. Browsers render an SVG referenced
-    from <img> in secure static mode, and the marker there is a raster <image>
-    shown through a <mask> — precisely the construct that silently fails to paint
-    in that mode. The reported symptom matches exactly: the linework draws and the
-    fill never appears, while the bytes in the file are provably correct.
-
-    Baking the panel to pixels removes the mask, the nested data URI and the
-    SVG-in-<img> path in one go. A PNG in an <img> has no conditional rendering
-    modes, so what the build proofs show is what a browser shows.
-
-    Rasterised with lib/svgproof — the repo's own renderer, the same one used to
-    proof plan SVGs — so the marker is flattened into the pixels here at build
-    time rather than being reassembled by the client.
-    """
-    sys.path.insert(0, str(HERE / "lib"))
-    import svgproof
-    vw = float(re.search(r'viewBox="([^"]+)"', svg).group(1).split()[2])
-    scale = max(3.0, min(10.0, target_w / vw))
-    cv, _ = svgproof.render(svg, scale=scale)
-    im = Image.frombytes("RGB", (cv.w, cv.h), bytes(cv.px))
-    buf = io.BytesIO()
-    im.save(buf, format="PNG", optimize=True)
-    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
-
-
-def assert_insets_marked(page, tol=45, min_share=0.004):
-    """Build gate: prove the unit marker is VISIBLE in the shipped page.
-
-    Reads index.html back off disk, pulls each inset out of its data: URI,
-    decodes the PNG, and counts pixels that are actually TERRA. Nothing here
-    trusts an intermediate — the input is the file that will be deployed, and the
-    thing measured is the pixels a browser will paint.
-
-    This is only a meaningful check because the inset ships as a flat PNG. While
-    it shipped as SVG-in-<img> the bytes could be perfect and the marker still
-    never render, so no amount of inspecting the file could catch the real
-    failure. Grepping the page for the hex is likewise no substitute: the colour
-    lives in pixel data and never appears as markup, while theme CSS elsewhere on
-    the page does carry accent hexes and gives a page-level false positive.
-    """
-    want = tuple(int(TERRA[i:i + 2], 16) for i in (1, 3, 5))
-    html_txt = Path(page).read_text(encoding="utf-8")
-    block = re.search(r'<div class="posimgs">(.*?)</div>', html_txt, re.S)
-    if not block:
-        return                                    # unit legitimately has no insets
-    uris = re.findall(r'src="data:image/png;base64,([^"]+)"', block.group(1))
-    if len(uris) < 2:
-        raise SystemExit(f"{page}: expected 2 inset PNGs in posimgs, found {len(uris)}")
-    for i, u in enumerate(uris):
-        im = Image.open(io.BytesIO(base64.b64decode(u))).convert("RGB")
-        px = list(im.getdata())
-        hits = sum(1 for p in px
-                   if max(abs(a - b) for a, b in zip(p, want)) <= tol)
-        share = hits / len(px)
-        if share < min_share:
-            raise SystemExit(
-                f"{page}: inset {i} shows no {TERRA} marker "
-                f"({share:.3%} of pixels, need {min_share:.1%}). "
-                "The unit marker is missing from the shipped panel.")
 
 
 # ------------------------------------------------------------------- fragments
@@ -372,12 +200,6 @@ EXTRA_CSS = """
 @media(max-width:520px){.sched li{grid-template-columns:70px 1fr;gap:12px}.sched b{font-size:24px}}
 .gal figure .ai{position:absolute;right:12px;top:11px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(13,26,20,.55);padding:5px 9px;border-radius:2px;backdrop-filter:blur(3px)}
 .rateline{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,240,230,.66);margin:8px 0 0}
-/* Position insets: the two figures have very different aspect ratios (the
-   masterplan is wide and short, the floor plate near-square). The grid default
-   of align-items:stretch forced the shorter figure's card to the taller one's
-   height, leaving dead ivory below the masterplan caption. Let each card take
-   its natural height instead. */
-.posimgs{align-items:start}
 """
 
 
@@ -425,14 +247,6 @@ def build(cfg_path):
     subprocess.run([sys.executable, str(HERE / "lib" / "build_plan.py"),
                     str(work / "rooms.json"), "--out", str(out / "plan.html"),
                     "--slug", slug], check=True)
-
-    caps = ["The building in the masterplan", "The apartment on the floor plate"]
-    ins = inset_svgs(PLANS / sheet_for(cfg["slug"]))
-    insets = ""
-    if ins:
-        insets = '<div class="posimgs">%s</div>' % "".join(
-            '<figure><img src="%s" alt="%s"><figcaption>%s</figcaption></figure>'
-            % (inset_png_uri(s), esc(c), esc(c)) for s, c in zip(ins, caps))
 
     title = "%s — %s %s · Sanders" % (cfg["name"], DEV["name"], cfg["type_label"])
     desc = cfg["sub"]
@@ -483,7 +297,7 @@ def build(cfg_path):
  {areas_table(sheet)}
 </div></section>
 {rate_section(sheet)}
-<section style="padding-top:0"><div class="wrap"><p class="eyebrow">Explore the residence</p><h2>Walk it, room by room</h2><p class="lead">{esc(cfg["plan_tagline"])}</p><div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div><script>(function(){{window.addEventListener("message",function(e){{var h=e.data&&e.data.sandersPlanHeight;if(!h)return;var f=document.querySelector(".plan-embed");if(!f)return;f.style.minHeight="0";f.style.height=(h+2)+"px";}});}})();</script>{insets}</div></section>
+<section style="padding-top:0"><div class="wrap"><p class="eyebrow">Explore the residence</p><h2>Walk it, room by room</h2><p class="lead">{esc(cfg["plan_tagline"])}</p><div class="plancard"><iframe class="plan-embed" src="plan.html" title="Interactive floor plan" loading="lazy"></iframe></div><script>(function(){{window.addEventListener("message",function(e){{var h=e.data&&e.data.sandersPlanHeight;if(!h)return;var f=document.querySelector(".plan-embed");if(!f)return;f.style.minHeight="0";f.style.height=(h+2)+"px";}});}})();</script></div></section>
 {gallery(cfg)}
 {payment_section()}
 <section class="loc"><div class="wrap">
@@ -505,7 +319,6 @@ def build(cfg_path):
 </div><p class="disc">Particulars prepared by Sanders International for guidance only and do not form part of any contract. Marina Orikum is an off-plan development; all imagery is computer-generated. Areas are taken from the developer's plan sheet and are measured externally and to the centreline of party and stair walls. Rates are indicative, quoted per m² by the developer, and subject to change; no unit total is published.</p></div></footer>
 </body></html>"""
     (out / "index.html").write_text(doc, encoding="utf-8")
-    assert_insets_marked(out / "index.html")
 
     # OG/card thumbnail — watermarked like every other published photo
     imaging._ffmpeg_render(PHOTOS / cfg["hero"], out / "thumb.jpg", 900, 84, True,
