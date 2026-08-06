@@ -13,8 +13,9 @@ and the €3,200–3,600 band. It never publishes a unit total. There is no code
 path here that multiplies rate by area, and the JSON-LD omits `offers` entirely
 rather than inventing a figure. See orikum.RATE_ONLY.
 """
-import base64, html, json, re, sys
+import base64, html, io, json, re, sys
 from pathlib import Path
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "lib"))
@@ -115,8 +116,69 @@ def inset_svgs(sheet):
             continue
         crop = (min(b.bbox[0] for b in g), min(b.bbox[1] for b in g),
                 max(b.bbox[2] for b in g), max(b.bbox[3] for b in g))
-        out.append(p.svg(crop=crop, pad=10, background=None))
+        out.append(terracotta_highlight(p.svg(crop=crop, pad=10, background=None)))
     return out
+
+
+# Deep burnt terracotta for the unit marker. NOT the brand accent #C0623C: that
+# sits at only 1.18:1 luminance against the sales-band green, so it separates by
+# hue alone — and terracotta-on-green is the red-green confusion axis, leaving a
+# colour-blind buyer to find their apartment by the white outline alone. This
+# darker tone clears 3:1 on luminance while still reading as terracotta, so the
+# marker survives any colour vision.
+TERRA = "#582C1A"
+
+
+def _png_uri(im):
+    buf = io.BytesIO()
+    im.save(buf, format="PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+def _decode(uri):
+    return Image.open(io.BytesIO(base64.b64decode(uri.split(",", 1)[1])))
+
+
+def terracotta_highlight(svg):
+    """Recolour the developer's unit marker to the terracotta accent.
+
+    The sheet marks WHICH building / WHICH apartment with a raster <image> — a
+    flat tint cut to the exact shape of the unit — shown through a <mask>. The
+    extraction carries both across correctly; the marker is NOT being dropped.
+    Two things make it unreadable on the page:
+
+      1. the tint is a muted mauve, close in luminance to the sales-band green;
+      2. the mask is mid-grey, so it renders at roughly HALF opacity, blending
+         the tint another 50% toward the band.
+
+    Measured, that lands at ~1.4:1 against the band — invisible at page size.
+
+    So: recolour the tint raster to terracotta, and normalise the mask to full
+    white so the marker is opaque. Only pixels change — the <image>, its matrix
+    and the mask geometry are untouched, so the shape stays exactly as drawn and
+    nothing about how it renders changes. Normalising by the mask's own maximum
+    keeps the antialiased edge ramp intact rather than hard-thresholding it.
+    """
+    rgb = tuple(int(TERRA[i:i + 2], 16) for i in (1, 3, 5))
+
+    def mask_repl(m):
+        im = _decode(re.search(r'href="([^"]+)"', m.group(0)).group(1)).convert("L")
+        top = max(im.getdata()) or 255
+        im = im.point(lambda v: min(255, int(v * 255 / top)))
+        return m.group(0).replace(re.search(r'href="([^"]+)"', m.group(0)).group(1),
+                                  _png_uri(im))
+
+    def tint_repl(m):
+        im = _decode(re.search(r'href="([^"]+)"', m.group(0)).group(1)).convert("RGB")
+        flat = Image.new("RGB", im.size, rgb)
+        return m.group(0).replace(re.search(r'href="([^"]+)"', m.group(0)).group(1),
+                                  _png_uri(flat))
+
+    # the mask's own <image> lives inside <defs>; the tint is the one carrying
+    # the mask="url(#…)" reference. Order matters: rewrite defs first.
+    svg = re.sub(r'<image\b(?![^>]*\bmask=)[^>]*/>', mask_repl, svg, count=0) \
+        if "<mask" in svg else svg
+    return re.sub(r'<image\b[^>]*\bmask="url\(#[^)]+\)"[^>]*/>', tint_repl, svg)
 
 
 def svg_uri(svg):
@@ -161,7 +223,7 @@ def payment_section():
                    for p, t in PAYMENT_SCHEDULE)
     return ("""<section class="pay"><div class="wrap">
  <p class="eyebrow">Terms</p><h2>How an off-plan purchase is staged</h2>
- <p class="lead">The developer's payment schedule, as supplied. Instalments follow
+ <p class="lead">The developer's payment schedule. Instalments follow
  construction, not the calendar — you pay against work completed and inspected.</p>
  <ol class="sched">%s</ol>
  <p class="note">The building permit has been obtained and construction begins within
@@ -246,6 +308,12 @@ EXTRA_CSS = """
 @media(max-width:520px){.sched li{grid-template-columns:70px 1fr;gap:12px}.sched b{font-size:24px}}
 .gal figure .ai{position:absolute;right:12px;top:11px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(13,26,20,.55);padding:5px 9px;border-radius:2px;backdrop-filter:blur(3px)}
 .rateline{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,240,230,.66);margin:8px 0 0}
+/* Position insets: the two figures have very different aspect ratios (the
+   masterplan is wide and short, the floor plate near-square). The grid default
+   of align-items:stretch forced the shorter figure's card to the taller one's
+   height, leaving dead ivory below the masterplan caption. Let each card take
+   its natural height instead. */
+.posimgs{align-items:start}
 """
 
 
@@ -349,7 +417,7 @@ def build(cfg_path):
  <div class="hl">{"".join("<div>%s</div>" % esc(h) for h in cfg["highlights"])}</div>
  <a class="back" href="/">← The Collection</a>
 </div></section>
-<section style="padding-top:0"><div class="wrap"><div class="mapwrap"><iframe src="https://maps.google.com/maps?q={mapq}&amp;z=14&amp;output=embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="{esc(cfg['name'])} — location map"></iframe></div><p class="note">{esc(DEV['address'])}. Map located from the address; the developer supplied no coordinates.</p></div></section>
+<section style="padding-top:0"><div class="wrap"><div class="mapwrap"><iframe src="https://maps.google.com/maps?q={mapq}&amp;z=14&amp;output=embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="{esc(cfg['name'])} — location map"></iframe></div><p class="note">{esc(DEV['address'])}</p></div></section>
 <footer><div class="wrap"><div class="fgrid">
  <div><img class="flogo" src="data:image/png;base64,{logo}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
  <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>
