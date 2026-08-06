@@ -326,7 +326,19 @@ def build(cfg_path):
 
     css = (ROOT / "adelaide" / "index.html").read_text(encoding="utf-8")
     css = re.search(r"<style>(.*?)</style>", css, re.S).group(1) + EXTRA_CSS
-    logo = base64.b64encode((HERE / "lib" / "logo.png").read_bytes()).decode()
+    # The mark ships in two tones and the house rule is absolute: the WHITE mark
+    # only ever sits on the forest-green bands, the DARK mark on ivory/light ones.
+    # The nav here is ivory (rgba(244,240,230,.92)), so it takes the dark mark —
+    # white-on-ivory rendered the logo invisible. The footer is var(--green), so
+    # it keeps the white one. Same rule as build_listing.py:logo_uri().
+    def _logo(name):
+        src = HERE / "lib" / name
+        if not src.exists():
+            raise SystemExit(f"missing {src} — generate it from logo.png before building")
+        return base64.b64encode(src.read_bytes()).decode()
+
+    logo_nav = _logo("logo-dark.png")     # ivory nav
+    logo_foot = _logo("logo.png")         # forest-green footer
 
     svg, vb = plan_svg(PLANS / sheet_for(cfg["slug"]))
     rooms = {"name": cfg["name"], "development": DEV["name"],
@@ -387,7 +399,7 @@ def build(cfg_path):
 <style>{css}</style>
 <script type="application/ld+json">{jsonld(cfg, sheet)}</script></head><body>
 <nav><div class="navin">
- <div class="brand"><img src="data:image/png;base64,{logo}" alt="Sanders">SANDERS</div>
+ <div class="brand"><img src="data:image/png;base64,{logo_nav}" alt="Sanders">SANDERS</div>
  <div class="navmid">{esc(cfg["name"])} · {esc(DEV["name"])}</div>
  <a class="btn btn-out" href="mailto:sales@sandersalbania.com?subject={esc(cfg['name'])}%20enquiry">Enquire</a>
 </div></nav>
@@ -419,7 +431,7 @@ def build(cfg_path):
 </div></section>
 <section style="padding-top:0"><div class="wrap"><div class="mapwrap"><iframe src="https://maps.google.com/maps?q={mapq}&amp;z=14&amp;output=embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="{esc(cfg['name'])} — location map"></iframe></div><p class="note">{esc(DEV['address'])}</p></div></section>
 <footer><div class="wrap"><div class="fgrid">
- <div><img class="flogo" src="data:image/png;base64,{logo}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
+ <div><img class="flogo" src="data:image/png;base64,{logo_foot}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
  <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>
   <div class="social">
    <a href="https://www.linkedin.com/company/sanders-albania/" target="_blank" rel="noopener" aria-label="Sanders on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 22 11 22 14.4V21h-4v-5.9c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1V21H9z"/></svg></a>
