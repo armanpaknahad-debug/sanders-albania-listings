@@ -185,41 +185,68 @@ def svg_uri(svg):
     return "data:image/svg+xml;base64," + base64.b64encode(svg.encode("utf-8")).decode()
 
 
-def assert_insets_marked(page, tol=12):
-    """Build gate: prove the unit marker survived INTO THE SHIPPED PAGE.
+def inset_png_uri(svg, target_w=900):
+    """Rasterise a position inset to a flat PNG at build time.
 
-    Reads the written index.html back, pulls each inset out of its data: URI,
-    base64-decodes the SVG, then decodes the masked <image> payload inside it and
-    checks the pixels are actually TERRA. Nothing here trusts an intermediate —
-    the input is the file on disk that will be deployed.
+    The insets used to ship as SVG-in-<img>. Browsers render an SVG referenced
+    from <img> in secure static mode, and the marker there is a raster <image>
+    shown through a <mask> — precisely the construct that silently fails to paint
+    in that mode. The reported symptom matches exactly: the linework draws and the
+    fill never appears, while the bytes in the file are provably correct.
 
-    Grepping the page for the hex is NOT equivalent and gives a false pass either
-    way: the marker colour lives in PNG pixel data, never as markup, while the
-    theme CSS elsewhere on the page does contain accent hexes. That mismatch is
-    exactly how a silently-unrecoloured raster could look fine to a text search.
+    Baking the panel to pixels removes the mask, the nested data URI and the
+    SVG-in-<img> path in one go. A PNG in an <img> has no conditional rendering
+    modes, so what the build proofs show is what a browser shows.
+
+    Rasterised with lib/svgproof — the repo's own renderer, the same one used to
+    proof plan SVGs — so the marker is flattened into the pixels here at build
+    time rather than being reassembled by the client.
+    """
+    sys.path.insert(0, str(HERE / "lib"))
+    import svgproof
+    vw = float(re.search(r'viewBox="([^"]+)"', svg).group(1).split()[2])
+    scale = max(3.0, min(10.0, target_w / vw))
+    cv, _ = svgproof.render(svg, scale=scale)
+    im = Image.frombytes("RGB", (cv.w, cv.h), bytes(cv.px))
+    buf = io.BytesIO()
+    im.save(buf, format="PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+def assert_insets_marked(page, tol=45, min_share=0.004):
+    """Build gate: prove the unit marker is VISIBLE in the shipped page.
+
+    Reads index.html back off disk, pulls each inset out of its data: URI,
+    decodes the PNG, and counts pixels that are actually TERRA. Nothing here
+    trusts an intermediate — the input is the file that will be deployed, and the
+    thing measured is the pixels a browser will paint.
+
+    This is only a meaningful check because the inset ships as a flat PNG. While
+    it shipped as SVG-in-<img> the bytes could be perfect and the marker still
+    never render, so no amount of inspecting the file could catch the real
+    failure. Grepping the page for the hex is likewise no substitute: the colour
+    lives in pixel data and never appears as markup, while theme CSS elsewhere on
+    the page does carry accent hexes and gives a page-level false positive.
     """
     want = tuple(int(TERRA[i:i + 2], 16) for i in (1, 3, 5))
     html_txt = Path(page).read_text(encoding="utf-8")
     block = re.search(r'<div class="posimgs">(.*?)</div>', html_txt, re.S)
     if not block:
         return                                    # unit legitimately has no insets
-    uris = re.findall(r'src="data:image/svg\+xml;base64,([^"]+)"', block.group(1))
-    if not uris:
-        raise SystemExit(f"{page}: posimgs block present but carries no inset SVG")
+    uris = re.findall(r'src="data:image/png;base64,([^"]+)"', block.group(1))
+    if len(uris) < 2:
+        raise SystemExit(f"{page}: expected 2 inset PNGs in posimgs, found {len(uris)}")
     for i, u in enumerate(uris):
-        svg = base64.b64decode(u).decode("utf-8")
-        tags = re.findall(r'<image\b[^>]*\bmask="url\(#[^)]+\)"[^>]*/>', svg)
-        if not tags:
-            raise SystemExit(f"{page}: inset {i} has no masked marker image")
-        for tag in tags:
-            href = re.search(r'href="data:image/\w+;base64,([^"]+)"', tag).group(1)
-            im = Image.open(io.BytesIO(base64.b64decode(href))).convert("RGB")
-            px = list(im.getdata())
-            mean = tuple(sum(p[c] for p in px) // len(px) for c in range(3))
-            if max(abs(a - b) for a, b in zip(mean, want)) > tol:
-                raise SystemExit(
-                    f"{page}: inset {i} marker is {mean}, expected ~{want} ({TERRA}). "
-                    "The raster recolour did not reach the shipped page.")
+        im = Image.open(io.BytesIO(base64.b64decode(u))).convert("RGB")
+        px = list(im.getdata())
+        hits = sum(1 for p in px
+                   if max(abs(a - b) for a, b in zip(p, want)) <= tol)
+        share = hits / len(px)
+        if share < min_share:
+            raise SystemExit(
+                f"{page}: inset {i} shows no {TERRA} marker "
+                f"({share:.3%} of pixels, need {min_share:.1%}). "
+                "The unit marker is missing from the shipped panel.")
 
 
 # ------------------------------------------------------------------- fragments
@@ -405,7 +432,7 @@ def build(cfg_path):
     if ins:
         insets = '<div class="posimgs">%s</div>' % "".join(
             '<figure><img src="%s" alt="%s"><figcaption>%s</figcaption></figure>'
-            % (svg_uri(s), esc(c), esc(c)) for s, c in zip(ins, caps))
+            % (inset_png_uri(s), esc(c), esc(c)) for s, c in zip(ins, caps))
 
     title = "%s — %s %s · Sanders" % (cfg["name"], DEV["name"], cfg["type_label"])
     desc = cfg["sub"]
