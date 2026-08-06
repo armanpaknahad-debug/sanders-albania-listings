@@ -1,0 +1,87 @@
+{
+  "slug": "ghislaine",
+  "name": "Ghislaine",
+  "type_label": "2+1",
+  "beds": 2,
+  "baths": 3,
+  "eyebrow": "Marina Orikum · Orikum, Vlorë",
+  "sub": "Twelfth floor of Building A — 174 m² net, both bedrooms en suite, and a scalloped veranda of 122.6 m² wrapped around three sides.",
+  "description": "The largest full-sea-view residence in the release, on the twelfth floor of Building A. The floor plate is a cross: four arms radiating from a central core, and Ghislaine takes three of them. One arm is given entirely to living, dining and kitchen, running out to a rounded window bay at its tip. The other two are bedroom suites, each with its own bathroom and its own outlook. A guest bathroom sits off the entrance hall. 174.1 m² net, 220.43 m² in total — and beyond the glazing, a 122.6 m² veranda scalloped around the building's edge, plus 22 m² of balcony. At this height, in this building, the outlook runs from the Karaburun peninsula round to the town.",
+  "plan_tagline": "The drawing shows the whole floor plate; the labelled rooms are Ghislaine. The lift core and the apartment to the south-east are not part of it. Areas are certified only for the whole apartment, so individual rooms are named rather than measured.",
+  "loc_h2": "Twelfth floor, Building A",
+  "loc_body": "Marina Orikum sits in the Gulf of Vlorë — the only marina between the Adriatic and the Ionian, sheltered by the Karaburun peninsula, the island of Sazan and the Llogara national park behind. It has served yachts along both coasts for over twenty years and is being extended to 800 berths, with apartments, villas, a five-star hotel and a promenade of shops and restaurants around it. Vlorë is 100 km from Tirana and 79 km from Saranda, and the new international airport at Vlorë is about to open.",
+  "highlights": [
+    "The largest full-sea-view residence in the release — 220.43 m² in total",
+    "Both bedrooms en suite, each on its own arm of the plan",
+    "A 122.6 m² veranda wrapped around three sides, plus 22 m² of balcony",
+    "Twelfth floor, Building A — the €3,600/m² band"
+  ],
+  "hero": "20241213_172734081_iOS.jpeg",
+  "gallery": [
+    [
+      "Untitled-1-15.png",
+      "A terrace above the marina"
+    ],
+    [
+      "Untitled-1-21.png",
+      "The towers from the water"
+    ],
+    [
+      "Untitled-1-09.png",
+      "Between the buildings, looking out"
+    ],
+    [
+      "20241213_172753288_iOS_1.jpeg",
+      "The marina at the foot of the hills"
+    ]
+  ],
+  "al_lead": "Rezidenca më e madhe me pamje të plotë nga deti, në katin e dymbëdhjetë të Godinës A.",
+  "al_body": "Planimetria e katit është në formë kryqi, me katër krahë rreth bërthamës qendrore; Ghislaine zë tre prej tyre. Një krah i takon plotësisht hapësirës së ndenjes, ngrënies dhe kuzhinës; dy të tjerët janë suita gjumi, secila me banjon e vet. 174.1 m² neto dhe 220.43 m² gjithsej, me një verandë prej 122.6 m² që rrethon ndërtesën nga tre anë.",
+  "rooms": [
+    {
+      "name": "Living, dining & kitchen",
+      "points": "131,180 223,180 239,238 185,372 110,351 102,255"
+    },
+    {
+      "name": "Bedroom 1",
+      "points": "272,163 356,163 356,215 272,215"
+    },
+    {
+      "name": "En suite 1",
+      "points": "300,218 346,218 346,264 300,264"
+    },
+    {
+      "name": "Bedroom 2",
+      "points": "372,176 456,176 456,268 372,268"
+    },
+    {
+      "name": "En suite 2",
+      "points": "330,270 367,270 367,328 330,328"
+    },
+    {
+      "name": "Guest bathroom",
+      "points": "143,384 231,384 231,451 143,451"
+    },
+    {
+      "name": "Entrance hall",
+      "points": "166,366 236,366 236,397 166,397",
+      "util": true
+    },
+    {
+      "name": "Veranda",
+      "area": "122.6 m²",
+      "outdoor": true,
+      "points": "31,143 123,143 123,243 31,243"
+    },
+    {
+      "name": "Veranda",
+      "outdoor": true,
+      "points": "23,284 102,284 102,393 23,393"
+    },
+    {
+      "name": "Veranda",
+      "outdoor": true,
+      "points": "477,155 548,155 548,293 477,293"
+    }
+  ]
+}

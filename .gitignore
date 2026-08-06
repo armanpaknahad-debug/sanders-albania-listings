@@ -42,3 +42,8 @@ Internal/register.csv
 *.csv
 **/*.csv
 
+
+# Marina Orikum: Sanders slug -> developer plan-sheet path. The filename is the
+# developer unit code, so it lives outside this repo with unit_codes.json.
+orikum_sheets.json
+**/orikum_sheets.json

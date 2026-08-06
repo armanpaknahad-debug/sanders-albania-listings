@@ -1,0 +1,70 @@
+{
+  "slug": "sylvaine",
+  "name": "Sylvaine",
+  "type_label": "1+1",
+  "beds": 1,
+  "baths": 1,
+  "eyebrow": "Marina Orikum · Orikum, Vlorë",
+  "sub": "A one-bedroom on the first floor of Building B, with a 65.7 m² veranda — very nearly the size of the apartment behind it.",
+  "description": "A 1+1 on the first floor of Building B, turned to the side of the marina. The apartment itself is 66.15 m² net: an open living, dining and kitchen running the full depth of the plan, one bedroom, a bathroom with bath and separate WC, and a utility room off the central hall. What makes it unusual is what lies beyond the glazing — a 65.7 m² veranda, almost as large again as the apartment, deep enough to hold a dining table and a full seating arrangement at the same time. Low in the building and close to the water, it is the plan that most rewards living outdoors.",
+  "plan_tagline": "Tap any room to see it named. Areas are certified only for the whole apartment and the veranda, so individual rooms are named rather than measured.",
+  "loc_h2": "First floor, side of the marina",
+  "loc_body": "Marina Orikum sits in the Gulf of Vlorë — the only marina between the Adriatic and the Ionian, sheltered by the Karaburun peninsula, the island of Sazan and the Llogara national park behind. It has served yachts along both coasts for over twenty years and is being extended to 800 berths, with apartments, villas, a five-star hotel and a promenade of shops and restaurants around it. Vlorë is 100 km from Tirana and 79 km from Saranda, and the new international airport at Vlorë is about to open.",
+  "highlights": [
+    "A 65.7 m² veranda — nearly the area of the apartment itself",
+    "First floor, side outlook — the €3,300/m² band",
+    "Designed by Chris Precht for Concord Investment Group",
+    "Albania's first marina, extending to 800 berths"
+  ],
+  "hero": "20241213_172719701_iOS.jpeg",
+  "gallery": [
+    [
+      "Untitled-1-02.png",
+      "The marina and the residences above it"
+    ],
+    [
+      "20241213_172636362_iOS.jpeg",
+      "A planted terrace over the berths"
+    ],
+    [
+      "Untitled-1-21.png",
+      "The towers from the water"
+    ],
+    [
+      "Untitled-1-01.png",
+      "The masterplan — courtyards between the buildings"
+    ]
+  ],
+  "al_lead": "Një apartament 1+1 në katin e parë të Godinës B, me pamje anësore nga marina.",
+  "al_body": "Apartamenti ka 66.15 m² neto — një hapësirë të hapur ndenjeje, ngrënieje dhe kuzhine, një dhomë gjumi, një banjo dhe një depo pranë korridorit. Veranda prej 65.7 m² është pothuajse aq e madhe sa vetë apartamenti: vend për një tavolinë ngrënieje dhe një zonë të plotë ndenjeje në të njëjtën kohë.",
+  "rooms": [
+    {
+      "name": "Living, dining & kitchen",
+      "points": "31,268 97,268 97,288 275,288 275,400 31,400"
+    },
+    {
+      "name": "Bedroom",
+      "points": "156,178 275,178 275,272 156,272"
+    },
+    {
+      "name": "Bathroom",
+      "points": "31,178 94,178 94,264 31,264"
+    },
+    {
+      "name": "Utility",
+      "points": "97,178 153,178 153,242 97,242",
+      "util": true
+    },
+    {
+      "name": "Hall",
+      "points": "100,248 172,248 172,287 100,287",
+      "util": true
+    },
+    {
+      "name": "Veranda",
+      "area": "65.7 m²",
+      "outdoor": true,
+      "points": "285,176 504,176 536,222 536,410 285,410"
+    }
+  ]
+}

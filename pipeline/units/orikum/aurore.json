@@ -1,0 +1,78 @@
+{
+  "slug": "aurore",
+  "name": "Aurore",
+  "type_label": "3+1",
+  "beds": 2,
+  "baths": 2,
+  "eyebrow": "Marina Orikum · Orikum, Vlorë",
+  "sub": "The only 3+1 in the release — and a 148 m² veranda, half again the size of the apartment behind it.",
+  "description": "The single 3+1 the developer has released at Marina Orikum: one of seventy plans, and the only one of its type. Second floor of Building B, full sea view, 95.85 m² net. What sets it apart is the veranda — 148.03 m², half again the area of the apartment itself, wrapping the plan along its full width and around the front, and deep enough to hold a lounge, a dining table and a garden. Inside, as drawn: two bedrooms, two bathrooms and a separate WC off the hall, with an open living, dining and kitchen on the eastern side. A note in fairness — the developer's own sheet types this apartment 3+1, but the drawing shows two bedroom doors off the hall, not three. We have described what is drawn and are checking the discrepancy with the developer. Low in the building, which is where a veranda this size does its best work.",
+  "plan_tagline": "Tap any room to see it named. Areas are certified only for the whole apartment and the veranda, so individual rooms are named rather than measured.",
+  "loc_h2": "Second floor, and a veranda the size of a garden",
+  "loc_body": "Marina Orikum sits in the Gulf of Vlorë — the only marina between the Adriatic and the Ionian, sheltered by the Karaburun peninsula, the island of Sazan and the Llogara national park behind. It has served yachts along both coasts for over twenty years and is being extended to 800 berths, with apartments, villas, a five-star hotel and a promenade of shops and restaurants around it. Vlorë is 100 km from Tirana and 79 km from Saranda, and the new international airport at Vlorë is about to open.",
+  "highlights": [
+    "The only 3+1 in the seventy-plan release",
+    "A 148.03 m² veranda — half again the apartment's own area",
+    "Second floor, full sea view — the €3,500/m² band",
+    "Designed by Chris Precht for Concord Investment Group"
+  ],
+  "hero": "Untitled-1-02.png",
+  "gallery": [
+    [
+      "Untitled-1-01.png",
+      "The masterplan — courtyards between the buildings"
+    ],
+    [
+      "20241213_172636362_iOS.jpeg",
+      "A planted terrace over the berths"
+    ],
+    [
+      "Untitled-1-10.png",
+      "The towers from the promenade"
+    ],
+    [
+      "20241213_172734081_iOS.jpeg",
+      "The marina and the coast road"
+    ]
+  ],
+  "al_lead": "I vetmi apartament 3+1 në këtë ofertë — në katin e dytë të Godinës B, me pamje të plotë nga deti.",
+  "al_body": "Apartamenti ka 95.85 m² neto. Veranda prej 148.03 m² është gjysmë here më e madhe se vetë apartamenti: hapësirë për një zonë ndenjeje, një tavolinë ngrënieje dhe gjelbërim, përgjatë gjithë gjerësisë së planimetrisë.",
+  "rooms": [
+    {
+      "name": "Living, dining & kitchen",
+      "points": "454,265 573,265 573,488 454,488"
+    },
+    {
+      "name": "Bedroom 1",
+      "points": "246,270 338,270 338,399 246,399"
+    },
+    {
+      "name": "Bedroom 2",
+      "points": "354,270 434,270 434,370 354,370"
+    },
+    {
+      "name": "Bathroom 1",
+      "points": "269,403 338,403 338,484 269,484"
+    },
+    {
+      "name": "Bathroom 2",
+      "points": "344,403 402,403 402,484 344,484"
+    },
+    {
+      "name": "WC",
+      "points": "409,422 442,422 442,484 409,484",
+      "util": true
+    },
+    {
+      "name": "Hall",
+      "points": "246,370 446,370 446,403 246,403",
+      "util": true
+    },
+    {
+      "name": "Veranda",
+      "area": "148.03 m²",
+      "outdoor": true,
+      "points": "10,131 576,131 576,256 226,256 226,498 10,498"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "slug": "bastienne",
+  "name": "Bastienne",
+  "type_label": "2+1",
+  "beds": 2,
+  "baths": 2,
+  "eyebrow": "Marina Orikum · Orikum, Vlorë",
+  "sub": "Eleventh floor, full sea view — a two-bedroom whose fan-shaped plan turns every room outward to the water.",
+  "description": "A 2+1 on the eleventh floor of Building B, in the full-sea-view band. The plan is the reason to look at it: rather than a rectangle with windows punched along one wall, the floor splays into a fan, so the two bedrooms and the living room each face out on their own diagonal and each open onto their own balcony. 108 m² net — two bedrooms, two bathrooms and a separate WC off the central hall, and an open living, dining and kitchen filling the eastern bay. Three balconies totalling 14.65 m². High enough that the masts below stop reading as clutter and the Gulf of Vlorë becomes the view.",
+  "plan_tagline": "Tap any room to see it named. Areas are certified only for the whole apartment and the balconies together, so individual rooms are named rather than measured.",
+  "loc_h2": "Eleventh floor, above the berths",
+  "loc_body": "Marina Orikum sits in the Gulf of Vlorë — the only marina between the Adriatic and the Ionian, sheltered by the Karaburun peninsula, the island of Sazan and the Llogara national park behind. It has served yachts along both coasts for over twenty years and is being extended to 800 berths, with apartments, villas, a five-star hotel and a promenade of shops and restaurants around it. Vlorë is 100 km from Tirana and 79 km from Saranda, and the new international airport at Vlorë is about to open.",
+  "highlights": [
+    "Eleventh floor, full sea view — the top of the rate card at €3,600/m²",
+    "A fan-shaped plan: every principal room on its own diagonal",
+    "Three balconies, 14.65 m² in total",
+    "Designed by Chris Precht for Concord Investment Group"
+  ],
+  "hero": "Untitled-1-21.png",
+  "gallery": [
+    [
+      "20241213_195138000_iOS.jpeg",
+      "The towers from the water"
+    ],
+    [
+      "Untitled-1-16.png",
+      "Balconies over the berths"
+    ],
+    [
+      "Untitled-1-02.png",
+      "The marina from above"
+    ],
+    [
+      "Untitled-1-12.png",
+      "The development at first light"
+    ]
+  ],
+  "al_lead": "Një apartament 2+1 në katin e njëmbëdhjetë të Godinës B, me pamje të plotë nga deti.",
+  "al_body": "Planimetria hapet si një freskore: të dyja dhomat e gjumit dhe hapësira e ndenjes kanë secila pamjen e vet dhe ballkonin e vet. 108 m² neto — dy dhoma gjumi, dy banjo dhe një tualet i veçantë pranë korridorit, si dhe një hapësirë e hapur ndenjeje, ngrënieje dhe kuzhine. Tre ballkone, gjithsej 14.65 m².",
+  "rooms": [
+    {
+      "name": "Living, dining & kitchen",
+      "points": "419,220 548,220 548,466 419,466"
+    },
+    {
+      "name": "Bedroom 1",
+      "points": "169,224 261,224 261,362 169,362"
+    },
+    {
+      "name": "Bedroom 2",
+      "points": "277,224 390,224 390,333 277,333"
+    },
+    {
+      "name": "Bathroom 1",
+      "points": "201,373 269,373 269,465 201,465"
+    },
+    {
+      "name": "Bathroom 2",
+      "points": "271,373 339,373 339,465 271,465"
+    },
+    {
+      "name": "WC",
+      "points": "342,398 381,398 381,465 342,465",
+      "util": true
+    },
+    {
+      "name": "Hall",
+      "points": "277,337 394,337 394,370 277,370",
+      "util": true
+    },
+    {
+      "name": "Balcony",
+      "outdoor": true,
+      "points": "215,195 277,124 344,195"
+    },
+    {
+      "name": "Balcony",
+      "outdoor": true,
+      "points": "476,197 532,124 554,152 554,197"
+    },
+    {
+      "name": "Balcony",
+      "outdoor": true,
+      "points": "152,303 57,366 152,431"
+    }
+  ]
+}

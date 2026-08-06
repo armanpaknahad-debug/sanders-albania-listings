@@ -13,13 +13,16 @@ downscale so the mark stays a constant proportion and cannot be scaled away.
 
 Resolution order for non-photo assets (best available wins, never dead-ends):
   1. Pillow (PIL)  — resize + JPEG re-encode. Present on the real deploy box.
-  2. sips          — macOS native, when it can write its scratch dir.
-  3. raw embed     — base64 the original bytes. Always works.
+  2. ffmpeg        — scale + JPEG re-encode. Present wherever the film pipeline runs.
+  3. sips          — macOS native, when it can write its scratch dir.
+  4. raw embed     — base64 the original bytes. Always works.
 
-Watermarking itself REQUIRES Pillow — it can never degrade silently to an unmarked
-photo (see require_watermarking / datauri(watermark=True)).
+Watermarking REQUIRES a real compositor — Pillow OR ffmpeg. It can never degrade
+silently to an unmarked photo (see require_watermarking / datauri(watermark=True)).
+Both backends implement the SAME spec (12% width, 3.5% margin, 90% opacity, soft
+shadow), so a photo marked on either box is indistinguishable.
 """
-import base64, io, shutil, subprocess, tempfile
+import base64, io, os, shutil, subprocess, tempfile
 from pathlib import Path
 
 try:
@@ -28,21 +31,24 @@ try:
 except Exception:
     _HAVE_PIL = False
 
+_FFMPEG = shutil.which("ffmpeg")
+
 LOGO_PATH = Path(__file__).resolve().parent / "logo.png"   # white-on-transparent mark
 _LOGO_RGBA = None
 
 WATERMARK_NEEDS_PIL = (
-    "Watermarking listing photos requires Pillow, which is not installed. "
-    "Install it (`pip3 install pillow`, or point PYTHONPATH at a Pillow install) "
-    "and rebuild. The build refuses to embed or publish unwatermarked photos."
+    "Watermarking listing photos requires Pillow or ffmpeg, and neither is "
+    "available. Install one (`pip3 install pillow`, or `brew install ffmpeg`) and "
+    "rebuild. The build refuses to embed or publish unwatermarked photos."
 )
 
 
 def require_watermarking():
-    """Build gate: listing photos MUST be watermarked, so Pillow is mandatory.
-    Fail loudly rather than silently publish unwatermarked photography — that is
-    the failure mode this whole feature is designed against."""
-    if not _HAVE_PIL:
+    """Build gate: listing photos MUST be watermarked, so a compositor is
+    mandatory. Fail loudly rather than silently publish unwatermarked
+    photography — that is the failure mode this whole feature is designed
+    against."""
+    if not _HAVE_PIL and not _FFMPEG:
         raise RuntimeError(WATERMARK_NEEDS_PIL)
 
 
@@ -86,6 +92,91 @@ def apply_watermark(im):
     mark.paste(lg, (x, y), lg)
     out = Image.alpha_composite(Image.alpha_composite(base, shadow), mark)
     return out.convert("RGB")
+
+
+# ---------------------------------------------------------------- ffmpeg backend
+def _probe(path):
+    """(w, h) via ffprobe."""
+    if not _FFMPEG:
+        return None
+    out = subprocess.run([_FFMPEG.replace("ffmpeg", "ffprobe"), "-v", "error",
+                          "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                          "-of", "csv=p=0:s=x", str(path)], capture_output=True, text=True).stdout.strip()
+    try:
+        w, h = out.split("x")[:2]
+        return int(w), int(h)
+    except Exception:
+        return None
+
+
+def _qscale(q):
+    """JPEG quality 0-100 -> mjpeg qscale 2-31 (lower is better)."""
+    return max(2, min(31, int(round((100 - q) / 5.0)) or 2))
+
+
+def _ffmpeg_render(path, out, w, q, watermark, cover=None):
+    """Scale to width `w` and (optionally) composite the Sanders mark.
+
+    Same spec as apply_watermark(): mark 12% of the delivered width (min 90px),
+    3.5% margin, 90% opacity, over a 60%-opacity shadow blurred at ~3% of the
+    mark width — applied AFTER the downscale so it stays a constant proportion.
+
+    `cover=(W, H)` delivers exactly those pixels, scaling up to fill and centre-
+    cropping the overflow — used for the OG/card thumbnail, whose dimensions are
+    declared in the page's meta tags and so must be exact.
+    """
+    dims = _probe(path)
+    if not dims:
+        return False
+    iw, ih = dims
+    if cover:
+        ow, oh = cover
+        pre = (f"scale={ow}:{oh}:force_original_aspect_ratio=increase:flags=lanczos,"
+               f"crop={ow}:{oh}")
+    else:
+        ow = min(iw, w) if w else iw
+        ow -= ow % 2
+        oh = max(2, int(round(ih * ow / iw)));  oh -= oh % 2
+        pre = f"scale={ow}:{oh}:flags=lanczos"
+    args = [_FFMPEG, "-v", "error", "-y", "-i", str(path)]
+    if not watermark:
+        args += ["-vf", pre, "-q:v", str(_qscale(q)), str(out)]
+        return subprocess.run(args, capture_output=True).returncode == 0
+    ldims = _probe(LOGO_PATH)
+    if not ldims:
+        return False
+    lw = max(90, int(round(ow * 0.12)))
+    lh = max(1, int(round(ldims[1] * lw / ldims[0])))
+    margin = int(round(ow * 0.035))
+    x, y = ow - lw - margin, oh - lh - margin
+    blur = max(1, int(round(lw * 0.03)))
+    pad = blur * 3                                    # room for the shadow to fall off
+    graph = (
+        f"[0:v]{pre},format=rgba[bg];"
+        f"[1:v]scale={lw}:{lh}:flags=lanczos,format=rgba,split[l1][l2];"
+        f"[l1]colorchannelmixer=rr=0:rg=0:rb=0:gr=0:gg=0:gb=0:br=0:bg=0:bb=0:aa=0.60,"
+        f"pad={lw + 2 * pad}:{lh + 2 * pad}:{pad}:{pad}:color=black@0,gblur=sigma={blur}[sh];"
+        f"[bg][sh]overlay=x={x - pad}:y={y - pad}[b2];"
+        f"[l2]colorchannelmixer=aa=0.90[mk];"
+        f"[b2][mk]overlay=x={x}:y={y},format=yuvj420p[out]"
+    )
+    args += ["-i", str(LOGO_PATH), "-filter_complex", graph, "-map", "[out]",
+             "-q:v", str(_qscale(q)), str(out)]
+    return subprocess.run(args, capture_output=True).returncode == 0
+
+
+def _ffmpeg_uri(path, w, q, watermark):
+    d = Path(tempfile.mkdtemp(prefix="ffwm_"))
+    out = d / "out.jpg"
+    try:
+        if not _ffmpeg_render(path, out, w, q, watermark) or not out.exists():
+            return None
+        return "data:image/jpeg;base64," + base64.b64encode(out.read_bytes()).decode()
+    finally:
+        try:
+            out.unlink(); d.rmdir()
+        except Exception:
+            pass
 
 
 def _raw_uri(path):
@@ -136,12 +227,21 @@ def datauri(path, w=1600, q=82, watermark=True):
     path = str(path)
     if watermark:
         require_watermarking()                 # loud failure — never an unmarked photo
-        return _pil_uri(path, w, q, watermark=True)
+        if _HAVE_PIL:
+            return _pil_uri(path, w, q, watermark=True)
+        u = _ffmpeg_uri(path, w, q, watermark=True)
+        if not u:
+            raise RuntimeError("ffmpeg failed to watermark %s — refusing to embed it unmarked" % path)
+        return u
     if _HAVE_PIL:
         try:
             return _pil_uri(path, w, q, watermark=False)
         except Exception:
             pass
+    if _FFMPEG:
+        u = _ffmpeg_uri(path, w, q, watermark=False)
+        if u:
+            return u
     s = _sips_uri(path, w, q)
     if s:
         return s
@@ -149,7 +249,11 @@ def datauri(path, w=1600, q=82, watermark=True):
 
 
 def dimensions(path):
-    """(w, h) via PIL or sips (read-only, no temp needed). None if unknown."""
+    """(w, h) via PIL, ffprobe or sips (read-only, no temp needed). None if unknown."""
+    if _FFMPEG:
+        d = _probe(path)
+        if d:
+            return d
     if _HAVE_PIL:
         try:
             im = Image.open(path)
