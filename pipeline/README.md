@@ -14,3 +14,18 @@ Requires: Python 3, PyMuPDF (fitz), Pillow.  `pip install pymupdf pillow`
 
 Rules: real plan drawings as the base (never redrawn boxes); real Sanders logo; mobile-safe clamp() CSS;
 interactive plan embedded via iframe. Séraphine keeps its inline-SVG plan — do not touch it.
+
+## English only — do not reintroduce Albanian
+
+`listings.sandersalbania.com` is an **English-only site**. No page on it carries
+Albanian, and none should: bilingual output is a **Tirana-site feature** and lives
+in that repo, along with its `_albanian-reference/` style guide. A copy of that
+folder does not belong here — if one appears, delete it.
+
+Albanian source material is still *read* — the Marina Orikum brochure is bilingual
+and its Albanian is developer-written, so it is the better source for facts about
+the development. Reading it is fine. Publishing it on this site is not.
+
+There are deliberately no Albanian constants in `lib/orikum.py` and no Albanian
+section in `build_orikum.py`. Both were built once and removed on request; don't
+add them back.

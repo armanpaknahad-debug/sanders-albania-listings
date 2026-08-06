@@ -21,8 +21,7 @@ sys.path.insert(0, str(HERE / "lib"))
 import imaging
 from plansvg import PlanSVG
 from orikum import (parse_sheet, sheet_for, sheet_text_filter, RATE_BAND, RATE_BAND_NOTE,
-                    PAYMENT_SCHEDULE, PAYMENT_SCHEDULE_AL, VIEW_LABEL, VIEW_LABEL_AL,
-                    MEASURED_NOTE_EN, MEASURED_NOTE_AL)
+                    PAYMENT_SCHEDULE, VIEW_LABEL, MEASURED_NOTE_EN)
 
 ROOT = HERE.parent
 SITE = "https://listings.sandersalbania.com"
@@ -203,25 +202,6 @@ def gallery(cfg):
             '</div></section>' % "".join(figs))
 
 
-def al_section(cfg, sheet):
-    rows = "".join('<li><b>%s</b><span>%s</span></li>' % (esc(p), esc(t))
-                   for p, t in PAYMENT_SCHEDULE_AL)
-    return ("""<section class="al" lang="sq"><div class="wrap">
- <p class="eyebrow">Në shqip</p><h2>%s — %s</h2>
- <p class="lead">%s</p>
- <p class="lead">%s</p>
- <p class="lead"><b>Sipërfaqja neto %s · Sipërfaqja totale %s · %s · Kati %s ·
- çmimi indikativ €%s/m².</b> Çmimi jepet për m², sipas katit dhe pozicionit;
- brezi i çmimeve është %s. %s</p>
- <ol class="sched">%s</ol>
-</div></section>""" % (
-        esc(cfg["name"]), esc(DEV["name"]),
-        esc(cfg["al_lead"]), esc(cfg["al_body"]),
-        esc(fmt_area(sheet["net"])), esc(fmt_area(sheet["total"])),
-        esc(VIEW_LABEL_AL[sheet["view"]]), sheet["floor"],
-        format(sheet["rate"], ","), esc(RATE_BAND.replace("€", "€")),
-        esc(MEASURED_NOTE_AL), rows))
-
 
 def jsonld(cfg, sheet):
     """No `offers`. The development forbids a published unit total and inventing
@@ -265,12 +245,6 @@ EXTRA_CSS = """
 .sched span{font-size:15px;color:#4c5a52}
 @media(max-width:520px){.sched li{grid-template-columns:70px 1fr;gap:12px}.sched b{font-size:24px}}
 .gal figure .ai{position:absolute;right:12px;top:11px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(13,26,20,.55);padding:5px 9px;border-radius:2px;backdrop-filter:blur(3px)}
-.al{background:var(--green);color:rgba(244,240,230,.9)}
-.al h2{color:var(--ivory2)}.al .lead{color:rgba(244,240,230,.86)}
-.al .sched li{border-color:rgba(244,240,230,.18)}
-.al .sched li:last-child{border-bottom-color:rgba(244,240,230,.18)}
-.al .sched span{color:rgba(244,240,230,.86)}
-.al .sched b{color:var(--gold)}
 .rateline{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,240,230,.66);margin:8px 0 0}
 """
 
@@ -293,7 +267,9 @@ def build(cfg_path):
                         {"label": "Total area", "value": fmt_area(sheet["total"])},
                         {"label": "Veranda" if sheet["veranda"] else "Balcony",
                          "value": fmt_area(sheet["veranda"] or sheet["balcony"]) or "—"},
-                        {"label": "Type", "value": sheet["type"]}],
+                        # published as drawn: where the sheet's type designation and
+                        # the drawing disagree, the config's type_label wins
+                        {"label": "Type", "value": cfg.get("type_label") or sheet["type"]}],
              "levels": [{"name": "Floor %s" % sheet["floor"],
                          "image": svg_uri(svg), "viewbox": vb,
                          "rooms": cfg["rooms"]}]}
@@ -374,7 +350,6 @@ def build(cfg_path):
  <a class="back" href="/">← The Collection</a>
 </div></section>
 <section style="padding-top:0"><div class="wrap"><div class="mapwrap"><iframe src="https://maps.google.com/maps?q={mapq}&amp;z=14&amp;output=embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="{esc(cfg['name'])} — location map"></iframe></div><p class="note">{esc(DEV['address'])}. Map located from the address; the developer supplied no coordinates.</p></div></section>
-{al_section(cfg, sheet)}
 <footer><div class="wrap"><div class="fgrid">
  <div><img class="flogo" src="data:image/png;base64,{logo}" alt="Sanders"><p class="b">Sanders International</p><div style="font-size:13px">London — Tirana</div></div>
  <div><p class="k">Enquiries</p><div><a href="mailto:sales@sandersalbania.com">sales@sandersalbania.com</a></div><div><a href="tel:+447414444782">+44 7414 444782</a></div><div><a href="https://sandersalbania.com">sandersalbania.com</a></div>

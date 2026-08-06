@@ -69,16 +69,13 @@ PAYMENT_SCHEDULE = [
     ("5%",  "on handover of keys"),
 ]
 
-PAYMENT_SCHEDULE_AL = [
-    ("30%", "në nënshkrimin e kontratës"),
-    ("35%", "në përfundim të strukturës"),
-    ("30%", "në përfundim të suvatimit dhe punimeve me gips, përfshirë instalimet "
-            "e para elektrike, hidraulike dhe mekanike"),
-    ("5%",  "në dorëzimin e çelësave"),
-]
 
 VIEW_LABEL = {"back": "Back view", "side": "Side view", "sea": "Full sea view"}
-VIEW_LABEL_AL = {"back": "Pamje nga pas", "side": "Pamje anësore", "sea": "Pamje nga deti"}
+
+# No Albanian constants live here. listings.sandersalbania.com is an English-only
+# site; bilingual output belongs to the Tirana repo. Albanian source material is
+# still READ from the developer's brochure to get the facts right — it is just
+# never published on this site. See pipeline/README.md.
 
 
 def rate_for(floor, view):
@@ -163,8 +160,6 @@ def parse_sheet(pdf_path, view=None):
 
 MEASURED_NOTE_EN = ("Areas are measured externally and to the centreline of party "
                     "and stair walls, as stated on the developer's plan.")
-MEASURED_NOTE_AL = ("Sipërfaqet janë matur nga jashtë objektit dhe në aks të mureve "
-                    "të përbashkëta me fqinjin dhe në aks të mureve të shkallëve.")
 
 
 # --------------------------------------------------------- plan-sheet text rules

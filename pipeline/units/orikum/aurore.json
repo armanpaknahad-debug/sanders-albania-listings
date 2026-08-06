@@ -1,18 +1,18 @@
 {
   "slug": "aurore",
   "name": "Aurore",
-  "type_label": "3+1",
+  "type_label": "2+1",
   "beds": 2,
   "baths": 2,
   "eyebrow": "Marina Orikum · Orikum, Vlorë",
-  "sub": "The only 3+1 in the release — and a 148 m² veranda, half again the size of the apartment behind it.",
-  "description": "The single 3+1 the developer has released at Marina Orikum: one of seventy plans, and the only one of its type. Second floor of Building B, full sea view, 95.85 m² net. What sets it apart is the veranda — 148.03 m², half again the area of the apartment itself, wrapping the plan along its full width and around the front, and deep enough to hold a lounge, a dining table and a garden. Inside, as drawn: two bedrooms, two bathrooms and a separate WC off the hall, with an open living, dining and kitchen on the eastern side. A note in fairness — the developer's own sheet types this apartment 3+1, but the drawing shows two bedroom doors off the hall, not three. We have described what is drawn and are checking the discrepancy with the developer. Low in the building, which is where a veranda this size does its best work.",
+  "sub": "A veranda of 148 m² — half again the size of the apartment behind it, and the largest in the release.",
+  "description": "Second floor of Building B, full sea view, 95.85 m² net. The reason to look at it is outside: a veranda of 148.03 m², half again the area of the apartment itself and the largest of any residence in the release. It wraps the plan along its full width and around the front, deep enough to hold a lounge, a dining table and a garden at the same time without any of them crowding the others. Inside, as drawn: two bedrooms, two bathrooms and a separate WC off the central hall, with an open living, dining and kitchen filling the eastern side. Low in the building — which is exactly where a veranda this size does its best work, close enough to the water that the marina reads as part of the room.",
   "plan_tagline": "Tap any room to see it named. Areas are certified only for the whole apartment and the veranda, so individual rooms are named rather than measured.",
   "loc_h2": "Second floor, and a veranda the size of a garden",
   "loc_body": "Marina Orikum sits in the Gulf of Vlorë — the only marina between the Adriatic and the Ionian, sheltered by the Karaburun peninsula, the island of Sazan and the Llogara national park behind. It has served yachts along both coasts for over twenty years and is being extended to 800 berths, with apartments, villas, a five-star hotel and a promenade of shops and restaurants around it. Vlorë is 100 km from Tirana and 79 km from Saranda, and the new international airport at Vlorë is about to open.",
   "highlights": [
-    "The only 3+1 in the seventy-plan release",
-    "A 148.03 m² veranda — half again the apartment's own area",
+    "A 148.03 m² veranda — the largest in the release, half again the apartment's own area",
+    "The veranda wraps the full width of the plan and around the front",
     "Second floor, full sea view — the €3,500/m² band",
     "Designed by Chris Precht for Concord Investment Group"
   ],
@@ -35,8 +35,6 @@
       "The marina and the coast road"
     ]
   ],
-  "al_lead": "I vetmi apartament 3+1 në këtë ofertë — në katin e dytë të Godinës B, me pamje të plotë nga deti.",
-  "al_body": "Apartamenti ka 95.85 m² neto. Veranda prej 148.03 m² është gjysmë here më e madhe se vetë apartamenti: hapësirë për një zonë ndenjeje, një tavolinë ngrënieje dhe gjelbërim, përgjatë gjithë gjerësisë së planimetrisë.",
   "rooms": [
     {
       "name": "Living, dining & kitchen",

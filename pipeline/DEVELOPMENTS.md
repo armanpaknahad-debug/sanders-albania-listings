@@ -56,13 +56,19 @@ computer-generated visualisation, including the seven files named
 camera EXIF. All Marina Orikum imagery is labelled ARTIST'S IMPRESSION until
 genuine photography of the built development is supplied.
 
-**Copy** — the brochure is bilingual and the Albanian is developer-written; use it
-as the source for development-level Albanian rather than translating the English
-back. Unit-level Albanian follows house style.
+**Copy** — English only. The brochure is bilingual and its Albanian is
+developer-written, so read it for the facts, but nothing Albanian is published:
+this site is English-only and bilingual output belongs to the Tirana repo.
+
+**Where the sheet and the drawing disagree, publish as drawn.** The type
+designation on these sheets is not always borne out by the plan. Describe the
+rooms the drawing actually shows, and record the discrepancy in the internal
+notes rather than on the page — the query to the developer is ours, not the
+customer's.
 
 **Onboarding** — 70 plan sheets, all parsing cleanly:
 
-    python3 pipeline/build_orikum.py _work/orikum/<slug>/config.json
+    python3 pipeline/build_orikum.py pipeline/units/orikum/<slug>.json
     python3 pipeline/build_orikum_collection.py
 
 `lib/orikum.parse_sheet()` reads building, floor, apartment number, type and all
